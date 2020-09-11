@@ -17,6 +17,7 @@ namespace Lab6
 			{
 			InitializeComponent();
 			//USBObserver.Instance.refreshDevices();
+			USBObserver.Instance.runAutoUpdate();
 
 			}
 
