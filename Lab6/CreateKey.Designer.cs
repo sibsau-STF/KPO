@@ -51,10 +51,6 @@
 			// functionsListBox1
 			// 
 			this.functionsListBox1.FormattingEnabled = true;
-			this.functionsListBox1.Items.AddRange(new object[] {
-            "Function 1",
-            "Function 2",
-            "Function 3"});
 			this.functionsListBox1.Location = new System.Drawing.Point(119, 117);
 			this.functionsListBox1.Name = "functionsListBox1";
 			this.functionsListBox1.Size = new System.Drawing.Size(120, 89);
