@@ -48,6 +48,9 @@
 			this.vendorBox = new System.Windows.Forms.TextBox();
 			this.createdBox = new System.Windows.Forms.TextBox();
 			this.untillBox = new System.Windows.Forms.TextBox();
+			this.button2 = new System.Windows.Forms.Button();
+			this.flowLayoutPanel1 = new System.Windows.Forms.FlowLayoutPanel();
+			this.flowLayoutPanel1.SuspendLayout();
 			this.SuspendLayout();
 			// 
 			// createKey
@@ -67,7 +70,7 @@
 			this.logBox.Name = "logBox";
 			this.logBox.ReadOnly = true;
 			this.logBox.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
-			this.logBox.Size = new System.Drawing.Size(657, 216);
+			this.logBox.Size = new System.Drawing.Size(518, 216);
 			this.logBox.TabIndex = 1;
 			// 
 			// openFileDialog1
@@ -116,7 +119,7 @@
 			this.checkBox1.AutoSize = true;
 			this.checkBox1.Enabled = false;
 			this.checkBox1.FlatStyle = System.Windows.Forms.FlatStyle.System;
-			this.checkBox1.Location = new System.Drawing.Point(574, 211);
+			this.checkBox1.Location = new System.Drawing.Point(3, 3);
 			this.checkBox1.Name = "checkBox1";
 			this.checkBox1.Size = new System.Drawing.Size(95, 22);
 			this.checkBox1.TabIndex = 6;
@@ -128,7 +131,7 @@
 			this.checkBox2.AutoSize = true;
 			this.checkBox2.Enabled = false;
 			this.checkBox2.FlatStyle = System.Windows.Forms.FlatStyle.System;
-			this.checkBox2.Location = new System.Drawing.Point(574, 238);
+			this.checkBox2.Location = new System.Drawing.Point(3, 31);
 			this.checkBox2.Name = "checkBox2";
 			this.checkBox2.Size = new System.Drawing.Size(95, 22);
 			this.checkBox2.TabIndex = 7;
@@ -140,7 +143,7 @@
 			this.checkBox3.AutoSize = true;
 			this.checkBox3.Enabled = false;
 			this.checkBox3.FlatStyle = System.Windows.Forms.FlatStyle.System;
-			this.checkBox3.Location = new System.Drawing.Point(574, 265);
+			this.checkBox3.Location = new System.Drawing.Point(3, 59);
 			this.checkBox3.Name = "checkBox3";
 			this.checkBox3.Size = new System.Drawing.Size(95, 22);
 			this.checkBox3.TabIndex = 8;
@@ -242,11 +245,34 @@
 			this.untillBox.TabIndex = 18;
 			this.untillBox.TabStop = false;
 			// 
+			// button2
+			// 
+			this.button2.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+			this.button2.Location = new System.Drawing.Point(267, 215);
+			this.button2.Name = "button2";
+			this.button2.Size = new System.Drawing.Size(136, 57);
+			this.button2.TabIndex = 19;
+			this.button2.Text = "Validate key";
+			this.button2.UseVisualStyleBackColor = true;
+			this.button2.Click += new System.EventHandler(this.button2_Click);
+			// 
+			// flowLayoutPanel1
+			// 
+			this.flowLayoutPanel1.Controls.Add(this.checkBox1);
+			this.flowLayoutPanel1.Controls.Add(this.checkBox2);
+			this.flowLayoutPanel1.Controls.Add(this.checkBox3);
+			this.flowLayoutPanel1.Location = new System.Drawing.Point(415, 204);
+			this.flowLayoutPanel1.Name = "flowLayoutPanel1";
+			this.flowLayoutPanel1.Size = new System.Drawing.Size(115, 94);
+			this.flowLayoutPanel1.TabIndex = 20;
+			// 
 			// Main
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-			this.ClientSize = new System.Drawing.Size(681, 532);
+			this.ClientSize = new System.Drawing.Size(538, 532);
+			this.Controls.Add(this.flowLayoutPanel1);
+			this.Controls.Add(this.button2);
 			this.Controls.Add(this.untillBox);
 			this.Controls.Add(this.createdBox);
 			this.Controls.Add(this.vendorBox);
@@ -257,9 +283,6 @@
 			this.Controls.Add(this.label5);
 			this.Controls.Add(this.label4);
 			this.Controls.Add(this.label3);
-			this.Controls.Add(this.checkBox3);
-			this.Controls.Add(this.checkBox2);
-			this.Controls.Add(this.checkBox1);
 			this.Controls.Add(this.label2);
 			this.Controls.Add(this.label1);
 			this.Controls.Add(this.textBox1);
@@ -269,6 +292,8 @@
 			this.Name = "Main";
 			this.Text = "Main";
 			this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.Main_FormClosing);
+			this.flowLayoutPanel1.ResumeLayout(false);
+			this.flowLayoutPanel1.PerformLayout();
 			this.ResumeLayout(false);
 			this.PerformLayout();
 
@@ -296,5 +321,7 @@
 		private System.Windows.Forms.TextBox vendorBox;
 		private System.Windows.Forms.TextBox createdBox;
 		private System.Windows.Forms.TextBox untillBox;
+		private System.Windows.Forms.Button button2;
+		private System.Windows.Forms.FlowLayoutPanel flowLayoutPanel1;
 		}
 	}

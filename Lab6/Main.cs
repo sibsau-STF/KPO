@@ -13,6 +13,7 @@ namespace Lab6
 	public partial class Main : Form
 		{
 		Key loadedKey;
+		Dictionary<int, CheckBox> FuncMarkers;
 		public Key LoadedKey { get { return loadedKey; } set
 				{
 				loadedKey = value;
@@ -23,6 +24,8 @@ namespace Lab6
 		public Main ()
 			{
 			InitializeComponent();
+			FuncMarkers = new Dictionary<int, CheckBox>() { [1]=checkBox1, [2]=checkBox2, [3]=checkBox3 };
+
 			// настройка диалога
 			openFileDialog1.DefaultExt = "key";
 			openFileDialog1.Filter = "USB Key (*.key)|*.key";
@@ -30,7 +33,6 @@ namespace Lab6
 			// запуск обсервера
 			USBObserver.Instance.runAutoUpdate();
 			USBObserver.Instance.UpdateDevices += updateDevices;
-
 			// запуск логирования
 			USBLogger.Instance.LoadLogs();
 			USBLogger.Instance.AddLog($"Application started [{DateTime.Now}]");
@@ -87,6 +89,33 @@ namespace Lab6
 					LoadedKey = (Key)key;
 				}
 			
+			}
+
+		void activateFunction(Function func)
+			{
+			CheckBox checkbox;
+			FuncMarkers.TryGetValue(func.ID, out checkbox);
+			if ( checkbox != null )
+				checkbox.CheckState = CheckState.Checked;
+
+			}
+
+		private void button2_Click (object sender, EventArgs e)
+			{
+			var serialNumbers = USBObserver.Instance.Devices.Select(device => device.SerialNumber);
+			FuncMarkers.Values.ToList().ForEach(checkbox => checkbox.CheckState = CheckState.Unchecked);
+
+			// флешка с нужным серийником подключена
+			if ( serialNumbers.Contains(LoadedKey.SerialNumber) && LoadedKey.UntilDate>DateTime.Now )
+				{
+				var functions = LoadedKey.Functions;
+				functions.ForEach(func => activateFunction(func));
+				flowLayoutPanel1.BackColor = Color.GreenYellow;
+				}
+			else
+				{
+				flowLayoutPanel1.BackColor = Color.OrangeRed;
+				}
 			}
 		}
 	}
