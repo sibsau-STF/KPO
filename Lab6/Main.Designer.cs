@@ -65,12 +65,12 @@
 			// 
 			// logBox
 			// 
-			this.logBox.Location = new System.Drawing.Point(12, 304);
+			this.logBox.Location = new System.Drawing.Point(8, 335);
 			this.logBox.Multiline = true;
 			this.logBox.Name = "logBox";
 			this.logBox.ReadOnly = true;
 			this.logBox.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
-			this.logBox.Size = new System.Drawing.Size(518, 216);
+			this.logBox.Size = new System.Drawing.Size(522, 216);
 			this.logBox.TabIndex = 1;
 			// 
 			// openFileDialog1
@@ -89,17 +89,18 @@
 			// 
 			// textBox1
 			// 
-			this.textBox1.Location = new System.Drawing.Point(12, 133);
+			this.textBox1.Location = new System.Drawing.Point(307, 238);
 			this.textBox1.Multiline = true;
 			this.textBox1.Name = "textBox1";
 			this.textBox1.ReadOnly = true;
-			this.textBox1.Size = new System.Drawing.Size(223, 139);
+			this.textBox1.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
+			this.textBox1.Size = new System.Drawing.Size(223, 91);
 			this.textBox1.TabIndex = 3;
 			// 
 			// label1
 			// 
 			this.label1.AutoSize = true;
-			this.label1.Location = new System.Drawing.Point(12, 284);
+			this.label1.Location = new System.Drawing.Point(12, 315);
 			this.label1.Name = "label1";
 			this.label1.Size = new System.Drawing.Size(39, 17);
 			this.label1.TabIndex = 4;
@@ -108,7 +109,7 @@
 			// label2
 			// 
 			this.label2.AutoSize = true;
-			this.label2.Location = new System.Drawing.Point(12, 104);
+			this.label2.Location = new System.Drawing.Point(304, 218);
 			this.label2.Name = "label2";
 			this.label2.Size = new System.Drawing.Size(84, 17);
 			this.label2.TabIndex = 5;
@@ -248,9 +249,9 @@
 			// button2
 			// 
 			this.button2.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-			this.button2.Location = new System.Drawing.Point(267, 215);
+			this.button2.Location = new System.Drawing.Point(115, 12);
 			this.button2.Name = "button2";
-			this.button2.Size = new System.Drawing.Size(136, 57);
+			this.button2.Size = new System.Drawing.Size(143, 74);
 			this.button2.TabIndex = 19;
 			this.button2.Text = "Validate key";
 			this.button2.UseVisualStyleBackColor = true;
@@ -261,7 +262,7 @@
 			this.flowLayoutPanel1.Controls.Add(this.checkBox1);
 			this.flowLayoutPanel1.Controls.Add(this.checkBox2);
 			this.flowLayoutPanel1.Controls.Add(this.checkBox3);
-			this.flowLayoutPanel1.Location = new System.Drawing.Point(415, 204);
+			this.flowLayoutPanel1.Location = new System.Drawing.Point(15, 104);
 			this.flowLayoutPanel1.Name = "flowLayoutPanel1";
 			this.flowLayoutPanel1.Size = new System.Drawing.Size(115, 94);
 			this.flowLayoutPanel1.TabIndex = 20;
@@ -270,7 +271,7 @@
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-			this.ClientSize = new System.Drawing.Size(538, 532);
+			this.ClientSize = new System.Drawing.Size(538, 563);
 			this.Controls.Add(this.flowLayoutPanel1);
 			this.Controls.Add(this.button2);
 			this.Controls.Add(this.untillBox);
