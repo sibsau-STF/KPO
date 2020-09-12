@@ -57,7 +57,9 @@ namespace Lab6
 		public static void CreateKey(string fileName, Key key)
 			{
 			BinaryFormatter formatter = new BinaryFormatter();
-			formatter.Serialize(File.Open(fileName, FileMode.OpenOrCreate), key);
+			var file = File.Open(fileName, FileMode.OpenOrCreate);
+			formatter.Serialize(file, key);
+			file.Close();
 			}
 
 		public static Key? ReadKey (string fileName)
@@ -66,7 +68,9 @@ namespace Lab6
 			BinaryFormatter formatter = new BinaryFormatter();
 			try
 				{
-				key = (Key)formatter.Deserialize(File.Open(fileName, FileMode.OpenOrCreate));
+				var file = File.Open(fileName, FileMode.OpenOrCreate);
+				key = (Key)formatter.Deserialize(file);
+				file.Close();
 				}
 			catch ( System.Runtime.Serialization.SerializationException ex)
 				{
