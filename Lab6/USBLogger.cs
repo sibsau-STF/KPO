@@ -11,6 +11,7 @@ namespace Lab6
 		{
 		string fileName = "loggs.txt";
 		public List<string> Loggs;
+		public event Action<string> AddMessage;
 
 		static USBLogger instance;
 		public static USBLogger Instance { get
@@ -27,19 +28,19 @@ namespace Lab6
 
 		public void LoadLogs ()
 			{
-			Loggs.Clear();
-			Loggs.AddRange(File.ReadAllLines(fileName));
+			if (File.Exists(fileName))
+				Loggs.AddRange(File.ReadAllLines(fileName));
 			}
 
 		public void AddLog(string message)
 			{
 			Loggs.Add(message);
+			AddMessage?.Invoke(message);
 			}
 
 		public void WriteLogs ()
 			{
-			Loggs.Clear();
-			Loggs.AddRange(File.ReadAllLines(fileName));
+			File.WriteAllLines(fileName, Loggs);
 			}
 
 		public void Dispose ()

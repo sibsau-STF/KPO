@@ -42,7 +42,7 @@
 			// 
 			// createKey
 			// 
-			this.createKey.Location = new System.Drawing.Point(25, 33);
+			this.createKey.Location = new System.Drawing.Point(12, 12);
 			this.createKey.Name = "createKey";
 			this.createKey.Size = new System.Drawing.Size(97, 35);
 			this.createKey.TabIndex = 0;
@@ -52,10 +52,12 @@
 			// 
 			// logBox
 			// 
-			this.logBox.Location = new System.Drawing.Point(22, 102);
+			this.logBox.Location = new System.Drawing.Point(12, 304);
 			this.logBox.Multiline = true;
 			this.logBox.Name = "logBox";
-			this.logBox.Size = new System.Drawing.Size(151, 120);
+			this.logBox.ReadOnly = true;
+			this.logBox.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
+			this.logBox.Size = new System.Drawing.Size(657, 216);
 			this.logBox.TabIndex = 1;
 			// 
 			// openFileDialog1
@@ -64,25 +66,26 @@
 			// 
 			// button1
 			// 
-			this.button1.Location = new System.Drawing.Point(14, 424);
+			this.button1.Location = new System.Drawing.Point(12, 53);
 			this.button1.Name = "button1";
-			this.button1.Size = new System.Drawing.Size(99, 33);
+			this.button1.Size = new System.Drawing.Size(97, 33);
 			this.button1.TabIndex = 2;
 			this.button1.Text = "Select key";
 			this.button1.UseVisualStyleBackColor = true;
 			// 
 			// textBox1
 			// 
-			this.textBox1.Location = new System.Drawing.Point(22, 259);
+			this.textBox1.Location = new System.Drawing.Point(12, 133);
 			this.textBox1.Multiline = true;
 			this.textBox1.Name = "textBox1";
-			this.textBox1.Size = new System.Drawing.Size(151, 139);
+			this.textBox1.ReadOnly = true;
+			this.textBox1.Size = new System.Drawing.Size(223, 139);
 			this.textBox1.TabIndex = 3;
 			// 
 			// label1
 			// 
 			this.label1.AutoSize = true;
-			this.label1.Location = new System.Drawing.Point(22, 82);
+			this.label1.Location = new System.Drawing.Point(12, 284);
 			this.label1.Name = "label1";
 			this.label1.Size = new System.Drawing.Size(39, 17);
 			this.label1.TabIndex = 4;
@@ -91,7 +94,7 @@
 			// label2
 			// 
 			this.label2.AutoSize = true;
-			this.label2.Location = new System.Drawing.Point(22, 239);
+			this.label2.Location = new System.Drawing.Point(12, 104);
 			this.label2.Name = "label2";
 			this.label2.Size = new System.Drawing.Size(84, 17);
 			this.label2.TabIndex = 5;
@@ -100,9 +103,11 @@
 			// checkBox1
 			// 
 			this.checkBox1.AutoSize = true;
-			this.checkBox1.Location = new System.Drawing.Point(481, 250);
+			this.checkBox1.Enabled = false;
+			this.checkBox1.FlatStyle = System.Windows.Forms.FlatStyle.System;
+			this.checkBox1.Location = new System.Drawing.Point(574, 211);
 			this.checkBox1.Name = "checkBox1";
-			this.checkBox1.Size = new System.Drawing.Size(92, 21);
+			this.checkBox1.Size = new System.Drawing.Size(95, 22);
 			this.checkBox1.TabIndex = 6;
 			this.checkBox1.Text = "Funciton1";
 			this.checkBox1.UseVisualStyleBackColor = true;
@@ -110,9 +115,11 @@
 			// checkBox2
 			// 
 			this.checkBox2.AutoSize = true;
-			this.checkBox2.Location = new System.Drawing.Point(481, 277);
+			this.checkBox2.Enabled = false;
+			this.checkBox2.FlatStyle = System.Windows.Forms.FlatStyle.System;
+			this.checkBox2.Location = new System.Drawing.Point(574, 238);
 			this.checkBox2.Name = "checkBox2";
-			this.checkBox2.Size = new System.Drawing.Size(92, 21);
+			this.checkBox2.Size = new System.Drawing.Size(95, 22);
 			this.checkBox2.TabIndex = 7;
 			this.checkBox2.Text = "Function2";
 			this.checkBox2.UseVisualStyleBackColor = true;
@@ -120,9 +127,11 @@
 			// checkBox3
 			// 
 			this.checkBox3.AutoSize = true;
-			this.checkBox3.Location = new System.Drawing.Point(481, 304);
+			this.checkBox3.Enabled = false;
+			this.checkBox3.FlatStyle = System.Windows.Forms.FlatStyle.System;
+			this.checkBox3.Location = new System.Drawing.Point(574, 265);
 			this.checkBox3.Name = "checkBox3";
-			this.checkBox3.Size = new System.Drawing.Size(92, 21);
+			this.checkBox3.Size = new System.Drawing.Size(95, 22);
 			this.checkBox3.TabIndex = 8;
 			this.checkBox3.Text = "Function3";
 			this.checkBox3.UseVisualStyleBackColor = true;
@@ -143,6 +152,7 @@
 			this.Controls.Add(this.createKey);
 			this.Name = "Main";
 			this.Text = "Main";
+			this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.Main_FormClosing);
 			this.ResumeLayout(false);
 			this.PerformLayout();
 

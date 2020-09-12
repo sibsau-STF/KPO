@@ -82,6 +82,12 @@ namespace Lab6
 			Updater.Start();
 			}
 
+		public void stopAutoUpdate ()
+			{
+			if ( Updater != null && Updater.IsAlive )
+				Updater.Abort();
+			}
+
 		void AutoUpdate ()
 			{
 			while (true)
