@@ -29,8 +29,8 @@
 		private void InitializeComponent ()
 			{
 			this.devicesBox = new System.Windows.Forms.ComboBox();
-			this.checkedListBox1 = new System.Windows.Forms.CheckedListBox();
-			this.textBox1 = new System.Windows.Forms.TextBox();
+			this.functionsListBox1 = new System.Windows.Forms.CheckedListBox();
+			this.nameBox = new System.Windows.Forms.TextBox();
 			this.dateTimePicker1 = new System.Windows.Forms.DateTimePicker();
 			this.label1 = new System.Windows.Forms.Label();
 			this.label2 = new System.Windows.Forms.Label();
@@ -48,24 +48,24 @@
 			this.devicesBox.Size = new System.Drawing.Size(121, 24);
 			this.devicesBox.TabIndex = 0;
 			// 
-			// checkedListBox1
+			// functionsListBox1
 			// 
-			this.checkedListBox1.FormattingEnabled = true;
-			this.checkedListBox1.Items.AddRange(new object[] {
+			this.functionsListBox1.FormattingEnabled = true;
+			this.functionsListBox1.Items.AddRange(new object[] {
             "Function 1",
             "Function 2",
             "Function 3"});
-			this.checkedListBox1.Location = new System.Drawing.Point(119, 117);
-			this.checkedListBox1.Name = "checkedListBox1";
-			this.checkedListBox1.Size = new System.Drawing.Size(120, 89);
-			this.checkedListBox1.TabIndex = 1;
+			this.functionsListBox1.Location = new System.Drawing.Point(119, 117);
+			this.functionsListBox1.Name = "functionsListBox1";
+			this.functionsListBox1.Size = new System.Drawing.Size(120, 89);
+			this.functionsListBox1.TabIndex = 1;
 			// 
-			// textBox1
+			// nameBox
 			// 
-			this.textBox1.Location = new System.Drawing.Point(118, 35);
-			this.textBox1.Name = "textBox1";
-			this.textBox1.Size = new System.Drawing.Size(121, 22);
-			this.textBox1.TabIndex = 2;
+			this.nameBox.Location = new System.Drawing.Point(118, 35);
+			this.nameBox.Name = "nameBox";
+			this.nameBox.Size = new System.Drawing.Size(121, 22);
+			this.nameBox.TabIndex = 2;
 			// 
 			// dateTimePicker1
 			// 
@@ -132,8 +132,8 @@
 			this.Controls.Add(this.label2);
 			this.Controls.Add(this.label1);
 			this.Controls.Add(this.dateTimePicker1);
-			this.Controls.Add(this.textBox1);
-			this.Controls.Add(this.checkedListBox1);
+			this.Controls.Add(this.nameBox);
+			this.Controls.Add(this.functionsListBox1);
 			this.Controls.Add(this.devicesBox);
 			this.Name = "CreateKey";
 			this.Text = "CreateKey";
@@ -146,8 +146,8 @@
 		#endregion
 
 		private System.Windows.Forms.ComboBox devicesBox;
-		private System.Windows.Forms.CheckedListBox checkedListBox1;
-		private System.Windows.Forms.TextBox textBox1;
+		private System.Windows.Forms.CheckedListBox functionsListBox1;
+		private System.Windows.Forms.TextBox nameBox;
 		private System.Windows.Forms.DateTimePicker dateTimePicker1;
 		private System.Windows.Forms.Label label1;
 		private System.Windows.Forms.Label label2;
