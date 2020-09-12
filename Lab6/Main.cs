@@ -117,5 +117,11 @@ namespace Lab6
 				flowLayoutPanel1.BackColor = Color.OrangeRed;
 				}
 			}
+
+		private void clearLogButton_Click (object sender, EventArgs e)
+			{
+			USBLogger.Instance.ClearLogs();
+			logBox.Text = "";
+			}
 		}
 	}

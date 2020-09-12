@@ -38,6 +38,12 @@ namespace Lab6
 			AddMessage?.Invoke(message);
 			}
 
+		public void ClearLogs ()
+			{
+			Loggs.Clear();
+			WriteLogs();
+			}
+
 		public void WriteLogs ()
 			{
 			File.WriteAllLines(fileName, Loggs);

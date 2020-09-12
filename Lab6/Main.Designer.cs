@@ -50,6 +50,7 @@
 			this.untillBox = new System.Windows.Forms.TextBox();
 			this.button2 = new System.Windows.Forms.Button();
 			this.flowLayoutPanel1 = new System.Windows.Forms.FlowLayoutPanel();
+			this.clearLogButton = new System.Windows.Forms.Button();
 			this.flowLayoutPanel1.SuspendLayout();
 			this.SuspendLayout();
 			// 
@@ -267,11 +268,22 @@
 			this.flowLayoutPanel1.Size = new System.Drawing.Size(115, 94);
 			this.flowLayoutPanel1.TabIndex = 20;
 			// 
+			// clearLogButton
+			// 
+			this.clearLogButton.Location = new System.Drawing.Point(172, 301);
+			this.clearLogButton.Name = "clearLogButton";
+			this.clearLogButton.Size = new System.Drawing.Size(129, 28);
+			this.clearLogButton.TabIndex = 21;
+			this.clearLogButton.Text = "Clear logs";
+			this.clearLogButton.UseVisualStyleBackColor = true;
+			this.clearLogButton.Click += new System.EventHandler(this.clearLogButton_Click);
+			// 
 			// Main
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
 			this.ClientSize = new System.Drawing.Size(538, 563);
+			this.Controls.Add(this.clearLogButton);
 			this.Controls.Add(this.flowLayoutPanel1);
 			this.Controls.Add(this.button2);
 			this.Controls.Add(this.untillBox);
@@ -324,5 +336,6 @@
 		private System.Windows.Forms.TextBox untillBox;
 		private System.Windows.Forms.Button button2;
 		private System.Windows.Forms.FlowLayoutPanel flowLayoutPanel1;
+		private System.Windows.Forms.Button clearLogButton;
 		}
 	}
