@@ -30,15 +30,16 @@
 			{
 			this.SuspendLayout();
 			// 
-			// Form1
+			// DBForm
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
 			this.ClientSize = new System.Drawing.Size(432, 489);
 			this.Location = new System.Drawing.Point(100, 300);
-			this.Name = "Form1";
+			this.Name = "DBForm";
 			this.StartPosition = System.Windows.Forms.FormStartPosition.Manual;
 			this.Text = "Storage";
+			this.Load += new System.EventHandler(this.DBForm_Load);
 			this.ResumeLayout(false);
 
 			}

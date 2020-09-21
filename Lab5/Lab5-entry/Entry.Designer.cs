@@ -32,6 +32,8 @@
 			this.messageBox = new System.Windows.Forms.TextBox();
 			this.sendButton = new System.Windows.Forms.Button();
 			this.openFileDialog1 = new System.Windows.Forms.OpenFileDialog();
+			this.colorDialog1 = new System.Windows.Forms.ColorDialog();
+			this.colorButton = new System.Windows.Forms.Button();
 			this.SuspendLayout();
 			// 
 			// previewButton
@@ -64,11 +66,22 @@
 			// 
 			this.openFileDialog1.FileName = "openFileDialog1";
 			// 
+			// colorButton
+			// 
+			this.colorButton.Location = new System.Drawing.Point(191, 221);
+			this.colorButton.Name = "colorButton";
+			this.colorButton.Size = new System.Drawing.Size(102, 31);
+			this.colorButton.TabIndex = 3;
+			this.colorButton.Text = "Set BG Color";
+			this.colorButton.UseVisualStyleBackColor = true;
+			this.colorButton.Click += new System.EventHandler(this.colorButton_Click);
+			// 
 			// Entry
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
 			this.ClientSize = new System.Drawing.Size(432, 260);
+			this.Controls.Add(this.colorButton);
 			this.Controls.Add(this.sendButton);
 			this.Controls.Add(this.messageBox);
 			this.Controls.Add(this.previewButton);
@@ -78,6 +91,7 @@
 			this.ShowIcon = false;
 			this.StartPosition = System.Windows.Forms.FormStartPosition.Manual;
 			this.Text = "Entry page";
+			this.Load += new System.EventHandler(this.Entry_Load);
 			this.ResumeLayout(false);
 			this.PerformLayout();
 
@@ -89,6 +103,8 @@
 		private System.Windows.Forms.TextBox messageBox;
 		private System.Windows.Forms.Button sendButton;
 		private System.Windows.Forms.OpenFileDialog openFileDialog1;
+		private System.Windows.Forms.ColorDialog colorDialog1;
+		private System.Windows.Forms.Button colorButton;
 		}
 	}
 

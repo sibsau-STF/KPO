@@ -89,6 +89,12 @@
   <ItemGroup>
     <None Include="App.config" />
   </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Lab5-entry\Lab5-entry.csproj">
+      <Project>{aaaacdaa-0737-4e48-be6f-f6eab3a64ece}</Project>
+      <Name>Lab5-entry</Name>
+    </ProjectReference>
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

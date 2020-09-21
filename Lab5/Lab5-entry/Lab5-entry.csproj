@@ -62,6 +62,7 @@
     <Compile Include="Entry.Designer.cs">
       <DependentUpon>Entry.cs</DependentUpon>
     </Compile>
+    <Compile Include="NativeMethods.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <EmbeddedResource Include="Entry.resx">
