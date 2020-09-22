@@ -44,6 +44,7 @@
 			this.previewButton.TabIndex = 0;
 			this.previewButton.Text = "Preview Image";
 			this.previewButton.UseVisualStyleBackColor = true;
+			this.previewButton.Click += new System.EventHandler(this.previewButton_Click);
 			// 
 			// messageBox
 			// 

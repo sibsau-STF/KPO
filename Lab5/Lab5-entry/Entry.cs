@@ -4,6 +4,7 @@ using System.ComponentModel;
 using System.Data;
 using System.Drawing;
 using System.Linq;
+using System.Net.Sockets;
 using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading.Tasks;
@@ -20,6 +21,7 @@ namespace Lab5_entry
 	{
 	public partial class Entry : Form
 		{
+		Socket socket;
 		public Entry ()
 			{
 			InitializeComponent();
@@ -32,7 +34,7 @@ namespace Lab5_entry
 
 		private void colorButton_Click (object sender, EventArgs e)
 			{
-			if (colorDialog1.ShowDialog() == DialogResult.OK )
+			if ( colorDialog1.ShowDialog() == DialogResult.OK )
 				{
 				var Selected = colorDialog1.Color;
 				this.BackColor = Selected;
@@ -41,7 +43,7 @@ namespace Lab5_entry
 				}
 			}
 
-		private void sendColor(Color clr, string windowTitle)
+		private void sendColor (Color clr, string windowTitle)
 			{
 			IntPtr ptrWnd = NativeMethods.FindWindow(null, windowTitle);
 			IntPtr ptrCopyData = IntPtr.Zero;
@@ -50,7 +52,7 @@ namespace Lab5_entry
 				// Create the data structure and fill with data
 				NativeMethods.COPYDATASTRUCT copyData = new NativeMethods.COPYDATASTRUCT();
 				string strColor = clr.ToArgb().ToString();
-				copyData.dwData = new IntPtr(2);		//type of data
+				copyData.dwData = new IntPtr(2);        //type of data
 				copyData.cbData = strColor.Length + 1;  // bytes for string + \0 character
 				copyData.lpData = Marshal.StringToHGlobalAnsi(strColor);
 
@@ -71,6 +73,24 @@ namespace Lab5_entry
 				if ( ptrCopyData != IntPtr.Zero )
 					Marshal.FreeCoTaskMem(ptrCopyData);
 				}
+			}
+
+		private void previewButton_Click (object sender, EventArgs e)
+			{
+			if ( openFileDialog1.ShowDialog() == DialogResult.OK )
+				new Task(() =>
+				{
+					try
+						{
+						socket = new Socket(SocketType.Stream, ProtocolType.Tcp);
+						socket.Connect("localhost", 7878);
+						socket.SendFile(openFileDialog1.FileName);
+						socket.Disconnect(false);
+						}
+					catch ( SocketException )
+						{
+						}
+				}).Start();
 			}
 		}
 	}

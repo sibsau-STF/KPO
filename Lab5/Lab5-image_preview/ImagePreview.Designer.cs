@@ -52,7 +52,9 @@
 			this.Name = "ImagePreview";
 			this.StartPosition = System.Windows.Forms.FormStartPosition.Manual;
 			this.Text = "Preview";
+			this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.ImagePreview_FormClosing);
 			this.Load += new System.EventHandler(this.ImagePreview_Load);
+			this.SizeChanged += new System.EventHandler(this.ImagePreview_SizeChanged);
 			this.ResumeLayout(false);
 
 			}
