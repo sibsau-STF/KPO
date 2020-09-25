@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
 using System.Drawing;
+using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices;
 using System.Text;
@@ -15,6 +16,7 @@ namespace Lab5_db
 	public partial class DBForm : Form
 		{
 		IntPtr _ClipboardViewerNext;
+		string filePath = "clipboard.txt";
 		public DBForm ()
 			{
 			InitializeComponent();
@@ -30,6 +32,8 @@ namespace Lab5_db
 				int error = Marshal.GetLastWin32Error();
 				MessageBox.Show(String.Format("The error {0} occured.", error));
 				}
+			if ( File.Exists(filePath) )
+				textBox1.Text = File.ReadAllText(filePath);
 			RegisterClipboardViewer();
 			}
 
@@ -113,6 +117,7 @@ namespace Lab5_db
 		private void DBForm_FormClosing (object sender, FormClosingEventArgs e)
 			{
 			UnregisterClipboardViewer();
+			File.WriteAllText(filePath, textBox1.Text);
 			}
 		}
 	}
