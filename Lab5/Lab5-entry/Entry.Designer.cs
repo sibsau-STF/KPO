@@ -30,7 +30,6 @@
 			{
 			this.previewButton = new System.Windows.Forms.Button();
 			this.messageBox = new System.Windows.Forms.TextBox();
-			this.sendButton = new System.Windows.Forms.Button();
 			this.openFileDialog1 = new System.Windows.Forms.OpenFileDialog();
 			this.colorDialog1 = new System.Windows.Forms.ColorDialog();
 			this.colorButton = new System.Windows.Forms.Button();
@@ -54,22 +53,13 @@
 			this.messageBox.Size = new System.Drawing.Size(408, 203);
 			this.messageBox.TabIndex = 1;
 			// 
-			// sendButton
-			// 
-			this.sendButton.Location = new System.Drawing.Point(345, 221);
-			this.sendButton.Name = "sendButton";
-			this.sendButton.Size = new System.Drawing.Size(75, 31);
-			this.sendButton.TabIndex = 2;
-			this.sendButton.Text = "Send";
-			this.sendButton.UseVisualStyleBackColor = true;
-			// 
 			// openFileDialog1
 			// 
 			this.openFileDialog1.FileName = "openFileDialog1";
 			// 
 			// colorButton
 			// 
-			this.colorButton.Location = new System.Drawing.Point(191, 221);
+			this.colorButton.Location = new System.Drawing.Point(318, 221);
 			this.colorButton.Name = "colorButton";
 			this.colorButton.Size = new System.Drawing.Size(102, 31);
 			this.colorButton.TabIndex = 3;
@@ -83,7 +73,6 @@
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
 			this.ClientSize = new System.Drawing.Size(432, 260);
 			this.Controls.Add(this.colorButton);
-			this.Controls.Add(this.sendButton);
 			this.Controls.Add(this.messageBox);
 			this.Controls.Add(this.previewButton);
 			this.Location = new System.Drawing.Point(100, 40);
@@ -102,7 +91,6 @@
 
 		private System.Windows.Forms.Button previewButton;
 		private System.Windows.Forms.TextBox messageBox;
-		private System.Windows.Forms.Button sendButton;
 		private System.Windows.Forms.OpenFileDialog openFileDialog1;
 		private System.Windows.Forms.ColorDialog colorDialog1;
 		private System.Windows.Forms.Button colorButton;

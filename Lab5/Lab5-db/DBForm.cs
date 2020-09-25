@@ -14,6 +14,7 @@ namespace Lab5_db
 	{
 	public partial class DBForm : Form
 		{
+		IntPtr _ClipboardViewerNext;
 		public DBForm ()
 			{
 			InitializeComponent();
@@ -29,33 +30,89 @@ namespace Lab5_db
 				int error = Marshal.GetLastWin32Error();
 				MessageBox.Show(String.Format("The error {0} occured.", error));
 				}
+			RegisterClipboardViewer();
+			}
+
+		/// <summary>
+		/// Register this form as a Clipboard Viewer application
+		/// </summary>
+		private void RegisterClipboardViewer ()
+			{
+			_ClipboardViewerNext = NativeMethods.SetClipboardViewer(this.Handle);
+			}
+
+		/// <summary>
+		/// Remove this form from the Clipboard Viewer list
+		/// </summary>
+		private void UnregisterClipboardViewer ()
+			{
+			NativeMethods.ChangeClipboardChain(this.Handle, _ClipboardViewerNext);
+			}
+
+		private string GetClipboardData ()
+			{
+			IDataObject iData = new DataObject();
+			string strText = "";
+
+			try
+				{
+				iData = Clipboard.GetDataObject();
+				}
+			catch ( Exception ex )
+				{
+				MessageBox.Show(ex.ToString(), "CLIPBOARD", MessageBoxButtons.OK, MessageBoxIcon.Error);
+				return null;
+				}
+
+			if ( iData.GetDataPresent(DataFormats.Text) )
+				strText = (string)iData.GetData(DataFormats.Text);
+			else
+				strText = "(cannot display this format)";
+			return strText;
 			}
 
 		protected override void WndProc (ref Message m)
 			{
-			if ( m.Msg == NativeMethods.WM_COPYDATA )
+
+			switch ( (NativeMethods.Msgs)m.Msg )
 				{
-				// Extract the file name
-				NativeMethods.COPYDATASTRUCT copyData = (NativeMethods.COPYDATASTRUCT)Marshal.PtrToStructure(m.LParam, typeof(NativeMethods.COPYDATASTRUCT));
-				int dataType = (int)copyData.dwData;
-				if ( dataType == 2 )
+				case NativeMethods.Msgs.WM_DRAWCLIPBOARD:
 					{
-					int argbColor = 0;
-					if ( int.TryParse((String)Marshal.PtrToStringAnsi(copyData.lpData), out argbColor) )
+					string newMessage = GetClipboardData();
+					textBox1.Text += newMessage + "\r\n";
+					NativeMethods.SendMessage(_ClipboardViewerNext, (uint)m.Msg, m.WParam, m.LParam);
+					break;
+					}
+
+				case NativeMethods.Msgs.WM_COPYDATA:
+					{
+					// Extract the file name
+					NativeMethods.COPYDATASTRUCT copyData = (NativeMethods.COPYDATASTRUCT)Marshal.PtrToStructure(m.LParam, typeof(NativeMethods.COPYDATASTRUCT));
+					int dataType = (int)copyData.dwData;
+					if ( dataType == 2 )
 						{
-						this.BackColor = Color.FromArgb(argbColor);
+						int argbColor = 0;
+						if ( int.TryParse((String)Marshal.PtrToStringAnsi(copyData.lpData), out argbColor) )
+							{
+							this.BackColor = Color.FromArgb(argbColor);
+							}
 						}
+					else
+						{
+						MessageBox.Show(String.Format("Unrecognized data type = {0}.", dataType), "WM_COPYDATA", MessageBoxButtons.OK, MessageBoxIcon.Error);
+						}
+					break;
 					}
-				else
-					{
-					MessageBox.Show(String.Format("Unrecognized data type = {0}.", dataType), "SendMessageDemo", MessageBoxButtons.OK, MessageBoxIcon.Error);
-					}
-				}
-			else
-				{
+				default:
 				base.WndProc(ref m);
+				break;
 				}
+
 			}
 
+		private void DBForm_FormClosing (object sender, FormClosingEventArgs e)
+			{
+			UnregisterClipboardViewer();
+			}
 		}
 	}
