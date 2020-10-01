@@ -18,7 +18,3 @@ DLLEXPORT BYTE* filterFunct(BYTE* array, int length) {
     }
     return array;
 }
-
-DLLEXPORT int calc() {
-    return 55;
-}
