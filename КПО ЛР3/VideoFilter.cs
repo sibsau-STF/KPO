@@ -19,7 +19,7 @@ namespace КПО_ЛР3
 		{
 			this.comboBox = comboBox;
 			VideoFilter last;
-			last = new VideoFilter("Отключён", (byte[] array) => array);
+			last = new VideoFilter("Отключён", (byte[] array, int length) => array);
 			videoFilters.Add(last);
 			comboBox.Invoke((MethodInvoker)delegate
 			{
@@ -48,7 +48,7 @@ namespace КПО_ЛР3
 			{
 				selectedIndex = comboBox.SelectedIndex;				
 			});
-			return videoFilters[selectedIndex].filterFunct(array);				 
+			return videoFilters[selectedIndex].filterFunct(array, array.Length);				 
 		}
 	}
 	class VideoFilter
@@ -65,10 +65,10 @@ namespace КПО_ЛР3
 		static extern bool FreeLibrary(int hModule);
 
 		[UnmanagedFunctionPointer(CallingConvention.Cdecl)]
-		public delegate IntPtr FilterFunctDLL(byte[] array);
+		public delegate IntPtr FilterFunctDLL(byte[] array, int lenth);
 
 		[UnmanagedFunctionPointer(CallingConvention.Cdecl)]
-		public delegate byte[] FilterFunct(byte[] array);
+		public delegate byte[] FilterFunct(byte[] array, int lenth);
 
 		[UnmanagedFunctionPointer(CallingConvention.Cdecl)]
 		delegate IntPtr DllGetInfo();
@@ -106,10 +106,10 @@ namespace КПО_ЛР3
 						if ((int)getProc != 0)
 						{
 							
-							filterFunct = (byte[] array) => {
+							filterFunct = (byte[] array, int Length) => {
 								var funct = (FilterFunctDLL)Marshal.GetDelegateForFunctionPointer(getProc, typeof(FilterFunctDLL));
 								byte[] tmpByte = new byte[array.Length];
-								Marshal.Copy(funct(array), tmpByte, 0, array.Length);
+								Marshal.Copy(funct(array, array.Length), tmpByte, 0, array.Length);								
 								return tmpByte;
 							};						
 						}

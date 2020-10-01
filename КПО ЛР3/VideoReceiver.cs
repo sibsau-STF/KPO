@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.Drawing;
+using System.Drawing.Imaging;
 using System.IO;
 using System.Linq;
 using System.Text;
@@ -23,19 +24,23 @@ namespace КПО_ЛР3
 			this.url = url;
 			videoFilters = new VideoFilters(comboBox);
 		}
-		
 		private void OnFrameReceived(object sender, FrameReceivedEventArgs e)
 		{
-			var frame = videoFilters.Filter(e.Frame);
-			var tmp = "";
-			using (var ms = new MemoryStream(frame))
+			using (var ms = new MemoryStream(e.Frame))
 			{
 				if (isWorked)
 				{
-					pictureBox.Invoke((MethodInvoker)delegate
+					Bitmap bm = new Bitmap(Image.FromStream(ms));
+					var ms2 = new MemoryStream();
+					bm.Save(ms2, ImageFormat.Bmp);
+					byte[] newMap = videoFilters.Filter(ms2.ToArray());
+					using (var ms3 = new MemoryStream(newMap))
 					{
-						pictureBox.Image = Image.FromStream(ms);
-					});
+						pictureBox.Invoke((MethodInvoker)delegate
+						{
+							pictureBox.Image = Image.FromStream(ms3);
+						});
+					}						
 				}
 			}
 		}		
