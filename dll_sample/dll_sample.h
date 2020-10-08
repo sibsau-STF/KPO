@@ -5,5 +5,10 @@
  
 #define DLLEXPORT extern "C" __declspec(dllexport)
 
+DLLEXPORT char* PluginFunctions();
+DLLEXPORT char* FunctionsDescriptions(char* str);
+DLLEXPORT char* FunctionsInterfaceCFG(char* str);
+DLLEXPORT char* FunctionsType(char* str);
+
 DLLEXPORT char* getInfo();
 DLLEXPORT BYTE* filterFunct(BYTE* array, int length);

@@ -9,8 +9,6 @@ using System.Windows.Forms;
 
 namespace КПО_ЛР3
 {
-	
-
 	class VideoFilters
 	{
 		List<VideoFilter> videoFilters = new List<VideoFilter>();
@@ -53,6 +51,7 @@ namespace КПО_ЛР3
 	}
 	class VideoFilter
 	{
+		#region importsDLL
 		[DllImport("kernel32.dll", EntryPoint = "LoadLibrary")]
 		static extern int LoadLibrary(
 			[MarshalAs(UnmanagedType.LPStr)] string lpLibFileName);
@@ -76,6 +75,9 @@ namespace КПО_ЛР3
 		[UnmanagedFunctionPointer(CallingConvention.Cdecl)]
 		delegate int Calc();
 
+		# endregion importsDLL
+
+
 		string dllPath;
 		string name = null;
 		public string Name { get { return name; } }
@@ -98,7 +100,7 @@ namespace КПО_ЛР3
 				if ((int)getProc != 0)
 				{
 					DllGetInfo GetInfo = (DllGetInfo)Marshal.GetDelegateForFunctionPointer(getProc, typeof(DllGetInfo));
-					var tmpResult = Marshal.PtrToStringAnsi(GetInfo());
+					string tmpResult = Marshal.PtrToStringAnsi(GetInfo());
 					if (tmpResult != "" && tmpResult != null)
 					{
 						name = tmpResult;
@@ -107,7 +109,7 @@ namespace КПО_ЛР3
 						{
 							
 							filterFunct = (byte[] array, int Length) => {
-								var funct = (FilterFunctDLL)Marshal.GetDelegateForFunctionPointer(getProc, typeof(FilterFunctDLL));
+								FilterFunctDLL funct = (FilterFunctDLL)Marshal.GetDelegateForFunctionPointer(getProc, typeof(FilterFunctDLL));
 								byte[] tmpByte = new byte[array.Length];
 								Marshal.Copy(funct(array, array.Length), tmpByte, 0, array.Length);								
 								return tmpByte;
