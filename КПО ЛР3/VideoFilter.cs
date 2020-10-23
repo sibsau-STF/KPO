@@ -1,5 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Drawing;
+using System.Drawing.Imaging;
 using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices;
@@ -9,48 +11,6 @@ using System.Windows.Forms;
 
 namespace КПО_ЛР3
 {
-	
-
-	class VideoFilters
-	{
-		List<VideoFilter> videoFilters = new List<VideoFilter>();
-		ComboBox comboBox;
-		public VideoFilters(ComboBox comboBox)
-		{
-			this.comboBox = comboBox;
-			VideoFilter last;
-			last = new VideoFilter("Отключён", (byte[] array, int length) => array);
-			videoFilters.Add(last);
-			comboBox.Invoke((MethodInvoker)delegate
-			{
-				comboBox.Items.Add(last.Name);
-				comboBox.SelectedIndex = 0;
-			});
-			string[] allfiles = Directory.GetFiles(Directory.GetCurrentDirectory(), "*.dll");
-			foreach (string filename in allfiles)
-			{
-				last = new VideoFilter(filename);
-				if (last.Name != null)
-				{
-					videoFilters.Add(last);
-					comboBox.Invoke((MethodInvoker)delegate
-					{
-						comboBox.Items.Add(last.Name);
-					});
-				}
-			}			
-		}
-
-		public byte[] Filter(byte[] array)
-		{
-			int selectedIndex = 0;
-			comboBox.Invoke((MethodInvoker)delegate
-			{
-				selectedIndex = comboBox.SelectedIndex;				
-			});
-			return videoFilters[selectedIndex].filterFunct(array, array.Length);				 
-		}
-	}
 	class VideoFilter
 	{
 		[DllImport("kernel32.dll", EntryPoint = "LoadLibrary")]
@@ -80,12 +40,27 @@ namespace КПО_ЛР3
 		string name = null;
 		public string Name { get { return name; } }
 
-		public FilterFunct filterFunct;		
+
+		public Bitmap Filter(Bitmap img)
+			{
+			var sourceBuffer = new MemoryStream();
+			img.Save(sourceBuffer, ImageFormat.Bmp);
+
+			byte[] sourceMap = sourceBuffer.ToArray();
+			byte[] resultMap = filterFunct(sourceMap, sourceMap.Length);
+
+			var resultBuffer = new MemoryStream(resultMap);
+			return new Bitmap(Image.FromStream(resultBuffer));
+			}
+
+		FilterFunct filterFunct;	
+			
 		public VideoFilter(string name, FilterFunct filterFunct)
 		{
 			this.name = name;
 			this.filterFunct = filterFunct;
 		}
+
 		public VideoFilter(string dllPath)
 		{
 			
@@ -117,5 +92,10 @@ namespace КПО_ЛР3
 				}
 			}
 		}
-	}
+
+		public override string ToString ()
+			{
+			return name;
+			}
+		}
 }

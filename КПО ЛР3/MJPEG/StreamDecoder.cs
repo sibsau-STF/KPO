@@ -5,11 +5,19 @@ using System.Net.Http;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
+using System.Windows.Forms;
 
 namespace MJPEG
 {
-    public class StreamDecoder : IStreamDecoder
+	public delegate void FrameHandler (object sender, FrameReceivedEventArgs e);
+
+	/// <summary>
+	/// Источник потока изображения
+	/// </summary>
+	public class StreamDecoder
     {
+        public event FrameHandler OnFrameReceived;
+
         private string _uri;
 
         private HttpClient _client;
@@ -18,56 +26,45 @@ namespace MJPEG
 
         private object _locker = new object();
 
-        private bool _updateUri;
-
-        public StreamDecoder()
-        {
-            _client = new HttpClient();
-        }
         Task tsk;
-        public void StartDecodingAsync(string uri)
-        {
-            if (_uri == null)
-            {
-                _uri = uri;
 
-                tsk = Task.Factory.StartNew(DoWork, TaskCreationOptions.LongRunning);
-                //tsk.
-            }
-            else
-            {
-                if (uri != _uri)
-                {
-                    _uri = uri;
-                    _updateUri = true;
-                }
-            }
-        }
+		public bool isWorking { get; protected set; } = false;
+		public bool isStopped { get; protected set; } = true;
 
         public byte[] GetLastFrame() => _lastFrame;
 
-        public delegate void FrameHandler(object sender, FrameReceivedEventArgs e);
 
-        public event FrameHandler OnFrameReceived;
+        public StreamDecoder(string uri)
+        {
+            _client = new HttpClient();
+			this._uri = uri;
+		}
+
+
+        public void StartDecodingAsync()
+        {
+			if ( _uri == null )
+				return;
+			tsk = Task.Factory.StartNew(DoWork, TaskCreationOptions.LongRunning);
+        }
 
         public void Pause()
 		{
-            isWorked = false;
+            isWorking = false;
 		}
 
-        public void Resume()
+        public void Stream()
         {
-            isWorked = true;
+            isWorking = true;
+			isStopped = false;
         }
 
         public void Stop()
 		{
-            isWorked = false;
-            isCanceled = true;
+            isWorking = false;
+            isStopped = true;
         }
 
-        bool isWorked = true;
-        bool isCanceled = false;
         private async Task DoWork()
         {
             while (true)
@@ -76,9 +73,9 @@ namespace MJPEG
                 {
                     using (var stream = await _client.GetStreamAsync(_uri).ConfigureAwait(false))
                     {
-                        while (isWorked)
+                        while (isWorking)
                         {
-                            if (isCanceled) break;
+                            if (isStopped) break;
 
                             int contentLength = GetContentLength(stream);
 
@@ -88,24 +85,17 @@ namespace MJPEG
 
                             if (content == null) break;
 
-                            if (_updateUri)
-                            {
-                                _updateUri = false;
-                                break;
-                            }
-
                             lock (_locker)
                             {
                                 _lastFrame = content;
                             }
-
                             OnFrameReceived?.Invoke(this, new FrameReceivedEventArgs()
                             {
                                 Frame = content
                             });
                         }
                     }
-                    if (isCanceled)
+                    if (isStopped)
                         return; 
                 }
                 catch (Exception e)

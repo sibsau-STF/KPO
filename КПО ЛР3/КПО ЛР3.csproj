@@ -54,7 +54,6 @@
       <DependentUpon>Form1.cs</DependentUpon>
     </Compile>
     <Compile Include="MJPEG\FrameReceivedEventArgs.cs" />
-    <Compile Include="MJPEG\IStreamDecoder.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="MJPEG\StreamDecoder.cs" />

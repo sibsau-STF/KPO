@@ -13,74 +13,66 @@ namespace КПО_ЛР3
 {
 	class VideoReceiver
 	{
-		PictureBox pictureBox;
-		string url;
-		bool isWorked = true;
+		public event Action<Bitmap> ImageRecieved;
+		public event Action<Bitmap> ImageFiltered;
+
+		Control actor;
 		StreamDecoder decoder = null;
-		VideoFilters videoFilters;
-		public VideoReceiver(PictureBox pictureBox, string url, ComboBox comboBox)
+		public VideoFilter filter;
+
+		public VideoReceiver(Control actor, StreamDecoder decoder, VideoFilter filter=null)
 		{
-			this.pictureBox = pictureBox;
-			this.url = url;
-			videoFilters = new VideoFilters(comboBox);
+			this.actor = actor;
+			this.filter = filter;
+			this.decoder = decoder;
+			this.decoder.OnFrameReceived += OnFrameReceived;
 		}
+
 		private void OnFrameReceived(object sender, FrameReceivedEventArgs e)
 		{
 			using (var ms = new MemoryStream(e.Frame))
 			{
-				if (isWorked)
+				if (decoder.isWorking)
 				{
 					Bitmap bm = new Bitmap(Image.FromStream(ms));
-					var ms2 = new MemoryStream();
-					bm.Save(ms2, ImageFormat.Bmp);
-					byte[] newMap = videoFilters.Filter(ms2.ToArray());
-					using (var ms3 = new MemoryStream(newMap))
-					{
-						pictureBox.Invoke((MethodInvoker)delegate
-						{
-							pictureBox.Image = Image.FromStream(ms3);
-						});
-					}						
+
+					//получаю кадр
+					if ( actor.InvokeRequired )
+						actor.Invoke(new Action<Bitmap>((img) => ImageRecieved?.Invoke(img)), bm);
+
+					if ( filter != null )
+						bm = filter.Filter(bm);
+
+					if ( actor.InvokeRequired )
+						actor.Invoke(new Action<Bitmap>((img) => ImageFiltered?.Invoke(img)), bm);
 				}
 			}
-		}		
+		}
+
 		public void Start()
 		{
-			if (decoder == null)
-			{
-				decoder = new StreamDecoder();
-				decoder.OnFrameReceived += OnFrameReceived;
-				decoder.StartDecodingAsync(url);
-			}
-			else
-			{
-				decoder.Resume();
-			}
-			isWorked = true;
+			if ( decoder.isStopped )
+				{
+				decoder.Stream();
+				decoder.StartDecodingAsync();
+				}
+			decoder.Stream();
 		}
+
 		public void Stop()
 		{
-			if (decoder != null)
-			{
+			if (!decoder.isStopped)
 				decoder.Stop();
-				isWorked = false;
-				decoder = null;
-				pictureBox.Image = null;
-			}
-			else MessageBox.Show("Просмотр выключен, невозможно выключить просмотр");			
+			else
+				MessageBox.Show("Просмотр выключен, невозможно выключить просмотр");			
 		}
+
 		public void Pause()
 		{
-			if (decoder != null)
-			{
+			if (decoder.isWorking)
 				decoder.Pause();
-				isWorked = false;
-			}					
-			else MessageBox.Show("Просмотр выключен, невозможно поставить на паузу");
-			
+			else
+				MessageBox.Show("Просмотр выключен, невозможно поставить на паузу");
 		}
-
-
-
 	}
 }
