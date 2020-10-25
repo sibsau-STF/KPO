@@ -21,6 +21,7 @@ namespace КПО_ЛР3
 		StreamDecoder stream;
 		VideoReceiver reciever;
 		VideoRecorder recorder;
+		ImagesDB DB;
 
 		VideoFilter Filter;
 		ImageResolution Resolution;
@@ -34,13 +35,19 @@ namespace КПО_ЛР3
 		}
 
 		private void Form1_Load(object sender, EventArgs e)
-		{
+			{
 			// http://103.137.83.115:8090/mjpg/video.mjpg
 			// http://188.170.32.93:82/mjpg/1/video.mjpg
 			stream = new StreamDecoder("http://103.137.83.115:8090/mjpg/video.mjpg");
 			reciever = new VideoReceiver(pictureBox1, stream);
 			reciever.ImageFiltered += PreviewImage;
+
 			recorder = new VideoRecorder(reciever);
+			recorder.RecordingStart += lockUI;
+			recorder.SavingEnd += releaseUI;
+			recorder.InsertDB += displayWork;
+			recorder.Logs.ForEach(displayWork);
+			recorder.StartDB(pictureBox1);
 
 			pathBox.Text = Path.Combine(Environment.CurrentDirectory, "captured");
 			savePath = pathBox.Text;
@@ -51,7 +58,23 @@ namespace КПО_ЛР3
 			resCombo.SelectedIndex = 0;
 
 			LoadFilters();
-		}
+			}
+
+		private void displayWork (DBRow row)
+			{
+			dbBox.Text += row.ToString() + "\r\n";
+			}
+
+		private void lockUI ()
+			{
+			toggleLock(true);
+			}
+
+		private void releaseUI ()
+			{
+			toggleLock(false);
+			recBtn.Text = "Записать";
+			}
 
 		private void PreviewImage (Image img)
 			{
@@ -97,7 +120,6 @@ namespace КПО_ЛР3
 			Resolution = (ImageResolution)resCombo.SelectedItem;
 			}
 
-
 		private void recBtn_Click (object sender, EventArgs e)
 			{
 			if ( recorder.isStopped )
@@ -110,14 +132,16 @@ namespace КПО_ЛР3
 
 			isRecording = !isRecording;
 			recBtn.Text = isRecording ? "Пауза" : "Записать";
-			toggleLock(isRecording);
 			}
 
 		private void recStopBtn_Click (object sender, EventArgs e)
 			{
-			toggleLock(isRecording);
-			if (recorder.isProceeding)
+			if ( isRecording )
+				{
 				recorder.Stop();
+				isRecording = false;
+				recBtn.Text = "Записать";
+				}
 			}
 
 		private void LoadFilters ()
