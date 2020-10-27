@@ -42,12 +42,16 @@ namespace КПО_ЛР3
 			reciever = new VideoReceiver(pictureBox1, stream);
 			reciever.ImageFiltered += PreviewImage;
 
-			recorder = new VideoRecorder(reciever);
+			recorder = new VideoRecorder(reciever, pictureBox1);
 			recorder.RecordingStart += lockUI;
 			recorder.SavingEnd += releaseUI;
+
+			recorder.InsertDB += savingProgress;
+			recorder.FileProceeded += proceededProgress;
+
 			recorder.InsertDB += displayWork;
 			recorder.Logs.ForEach(displayWork);
-			recorder.StartDB(pictureBox1);
+			recorder.StartDB();
 
 			pathBox.Text = Path.Combine(Environment.CurrentDirectory, "captured");
 			savePath = pathBox.Text;
@@ -58,6 +62,16 @@ namespace КПО_ЛР3
 			resCombo.SelectedIndex = 0;
 
 			LoadFilters();
+			}
+
+		private void savingProgress (DBRow obj)
+			{
+			savedBar.PerformStep();
+			}
+
+		private void proceededProgress (ImageFile obj)
+			{
+			filteredBar.PerformStep();
 			}
 
 		private void displayWork (DBRow row)
@@ -138,10 +152,21 @@ namespace КПО_ЛР3
 			{
 			if ( isRecording )
 				{
-				recorder.Stop();
+				int filesCount = recorder.Stop();
+				SetupProgress(filesCount);
 				isRecording = false;
 				recBtn.Text = "Записать";
 				}
+			}
+
+		private void SetupProgress(int count)
+			{
+			filteredBar.Value = 0;
+			savedBar.Value = 0;
+			filteredBar.Maximum = count;
+			savedBar.Maximum = count;
+			filteredBar.Step = 1;
+			filteredBar.Step = 1;
 			}
 
 		private void LoadFilters ()

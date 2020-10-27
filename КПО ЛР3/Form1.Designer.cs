@@ -45,6 +45,10 @@
 			this.filterCombo = new System.Windows.Forms.ComboBox();
 			this.label3 = new System.Windows.Forms.Label();
 			this.resCombo = new System.Windows.Forms.ComboBox();
+			this.filteredBar = new System.Windows.Forms.ProgressBar();
+			this.savedBar = new System.Windows.Forms.ProgressBar();
+			this.label4 = new System.Windows.Forms.Label();
+			this.label5 = new System.Windows.Forms.Label();
 			((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
 			((System.ComponentModel.ISupportInitialize)(this.workersUpDown)).BeginInit();
 			this.SuspendLayout();
@@ -219,11 +223,47 @@
 			this.resCombo.TabIndex = 21;
 			this.resCombo.SelectedValueChanged += new System.EventHandler(this.resCombo_SelectedValueChanged);
 			// 
+			// filteredBar
+			// 
+			this.filteredBar.Location = new System.Drawing.Point(404, 584);
+			this.filteredBar.Name = "filteredBar";
+			this.filteredBar.Size = new System.Drawing.Size(245, 23);
+			this.filteredBar.TabIndex = 22;
+			// 
+			// savedBar
+			// 
+			this.savedBar.Location = new System.Drawing.Point(404, 617);
+			this.savedBar.Name = "savedBar";
+			this.savedBar.Size = new System.Drawing.Size(245, 23);
+			this.savedBar.TabIndex = 23;
+			// 
+			// label4
+			// 
+			this.label4.AutoSize = true;
+			this.label4.Location = new System.Drawing.Point(308, 586);
+			this.label4.Name = "label4";
+			this.label4.Size = new System.Drawing.Size(90, 17);
+			this.label4.TabIndex = 24;
+			this.label4.Text = "Обработано";
+			// 
+			// label5
+			// 
+			this.label5.AutoSize = true;
+			this.label5.Location = new System.Drawing.Point(272, 619);
+			this.label5.Name = "label5";
+			this.label5.Size = new System.Drawing.Size(126, 17);
+			this.label5.TabIndex = 25;
+			this.label5.Text = "Записано на диск";
+			// 
 			// Form1
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
 			this.ClientSize = new System.Drawing.Size(942, 653);
+			this.Controls.Add(this.label5);
+			this.Controls.Add(this.label4);
+			this.Controls.Add(this.savedBar);
+			this.Controls.Add(this.filteredBar);
 			this.Controls.Add(this.resCombo);
 			this.Controls.Add(this.label3);
 			this.Controls.Add(this.filterCombo);
@@ -270,6 +310,10 @@
 		private System.Windows.Forms.ComboBox filterCombo;
 		private System.Windows.Forms.Label label3;
 		private System.Windows.Forms.ComboBox resCombo;
+		private System.Windows.Forms.ProgressBar filteredBar;
+		private System.Windows.Forms.ProgressBar savedBar;
+		private System.Windows.Forms.Label label4;
+		private System.Windows.Forms.Label label5;
 		}
 }
 

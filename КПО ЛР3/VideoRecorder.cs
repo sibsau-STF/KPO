@@ -35,12 +35,15 @@ namespace КПО_ЛР3
 		{
 		public event Action RecordingStart;
 		public event Action RecordingEnd;
+
 		public event Action ProceedingStart;
+		public event Action<ImageFile> FileProceeded;
 		public event Action ProceedingEnd;
+
 		public event Action SavingStart;
+		public event Action<DBRow> InsertDB;
 		public event Action SavingEnd;
 
-		public event Action<DBRow> InsertDB;
 
 		public bool isRecording { get; protected set; } = false;
 		public bool isStopped { get; protected set; } = true;
@@ -60,6 +63,7 @@ namespace КПО_ЛР3
 		ImageResolution Resolution;
 		string savePath;
 		VideoReceiver Reciever;
+		Control actor;
 
 		int AvailableWorkers;
 		List<Task> Workers;
@@ -67,18 +71,19 @@ namespace КПО_ЛР3
 		Task background;
 		CancellationTokenSource cancelDBSource;
 
-		public VideoRecorder (VideoReceiver reciever)
+		public VideoRecorder (VideoReceiver reciever, Control actor)
 			{
+			this.actor = actor;
 			Reciever = reciever;
 			DB = new ImagesDB();
 			Logs = DB.Select();
 			}
 
-		public void StartDB (Control control)
+		public void StartDB ()
 			{
 			cancelDBSource = new CancellationTokenSource();
 			background = Task.Factory.StartNew(delegate (object obj)
-				{ AcceptDBRequests((Control)obj); }, control, cancelDBSource.Token);
+				{ AcceptDBRequests((Control)obj); }, actor, cancelDBSource.Token);
 			}
 
 		public void StopDB ()
@@ -115,13 +120,14 @@ namespace КПО_ЛР3
 			isRecording = false;
 			}
 
-		public void Stop ()
+		public int Stop ()
 			{
 			Reciever.ImageRecieved -= saveFrame;
 			RecordingEnd?.Invoke();
 			isStopped = true;
 			isRecording = false;
 			planWork();
+			return sourceFiles.Count; 
 			}
 
 		private void AcceptDBRequests (Control actor)
@@ -153,6 +159,7 @@ namespace КПО_ЛР3
 						var newRow = new DBRow(file.Name, savePath, file.ProceedTime);
 						DB.Insert(newRow);
 						file.Save(savePath);
+						file = new ImageFile();
 
 						if ( actor.InvokeRequired )
 							actor.Invoke(new Action(() =>
@@ -231,6 +238,10 @@ namespace КПО_ЛР3
 			file.Image = result;
 
 			dbRequests.Enqueue(file);
+
+			if ( actor.InvokeRequired )
+				actor.Invoke(new Action(() =>
+					FileProceeded?.Invoke(file)));
 			}
 
 		private async Task planWork ()
