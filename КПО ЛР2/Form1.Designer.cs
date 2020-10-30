@@ -40,8 +40,11 @@
 			this.button7 = new System.Windows.Forms.Button();
 			this.comboBox1 = new System.Windows.Forms.ComboBox();
 			this.comboBox2 = new System.Windows.Forms.ComboBox();
+			this.trackBar1 = new System.Windows.Forms.TrackBar();
+			this.flowLayoutPanel1 = new System.Windows.Forms.FlowLayoutPanel();
 			((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
 			((System.ComponentModel.ISupportInitialize)(this.pictureBox2)).BeginInit();
+			((System.ComponentModel.ISupportInitialize)(this.trackBar1)).BeginInit();
 			this.SuspendLayout();
 			// 
 			// pictureBox1
@@ -64,10 +67,10 @@
 			// 
 			// textBox1
 			// 
-			this.textBox1.Location = new System.Drawing.Point(1097, 12);
+			this.textBox1.Location = new System.Drawing.Point(785, 387);
 			this.textBox1.Multiline = true;
 			this.textBox1.Name = "textBox1";
-			this.textBox1.Size = new System.Drawing.Size(140, 356);
+			this.textBox1.Size = new System.Drawing.Size(412, 152);
 			this.textBox1.TabIndex = 2;
 			// 
 			// pictureBox2
@@ -130,7 +133,7 @@
 			// 
 			// button7
 			// 
-			this.button7.Location = new System.Drawing.Point(1162, 374);
+			this.button7.Location = new System.Drawing.Point(1122, 560);
 			this.button7.Name = "button7";
 			this.button7.Size = new System.Drawing.Size(75, 23);
 			this.button7.TabIndex = 9;
@@ -154,11 +157,28 @@
 			this.comboBox2.Size = new System.Drawing.Size(121, 21);
 			this.comboBox2.TabIndex = 11;
 			// 
+			// trackBar1
+			// 
+			this.trackBar1.Location = new System.Drawing.Point(534, 511);
+			this.trackBar1.Name = "trackBar1";
+			this.trackBar1.Size = new System.Drawing.Size(104, 45);
+			this.trackBar1.TabIndex = 13;
+			this.trackBar1.Value = 5;
+			// 
+			// flowLayoutPanel1
+			// 
+			this.flowLayoutPanel1.Location = new System.Drawing.Point(94, 403);
+			this.flowLayoutPanel1.Name = "flowLayoutPanel1";
+			this.flowLayoutPanel1.Size = new System.Drawing.Size(434, 180);
+			this.flowLayoutPanel1.TabIndex = 14;
+			// 
 			// Form1
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
 			this.ClientSize = new System.Drawing.Size(1249, 641);
+			this.Controls.Add(this.flowLayoutPanel1);
+			this.Controls.Add(this.trackBar1);
 			this.Controls.Add(this.comboBox2);
 			this.Controls.Add(this.comboBox1);
 			this.Controls.Add(this.button7);
@@ -176,6 +196,7 @@
 			this.Load += new System.EventHandler(this.Form1_Load);
 			((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).EndInit();
 			((System.ComponentModel.ISupportInitialize)(this.pictureBox2)).EndInit();
+			((System.ComponentModel.ISupportInitialize)(this.trackBar1)).EndInit();
 			this.ResumeLayout(false);
 			this.PerformLayout();
 
@@ -195,6 +216,8 @@
 		private System.Windows.Forms.Button button7;
 		private System.Windows.Forms.ComboBox comboBox1;
 		private System.Windows.Forms.ComboBox comboBox2;
+		private System.Windows.Forms.TrackBar trackBar1;
+		private System.Windows.Forms.FlowLayoutPanel flowLayoutPanel1;
 	}
 }
 
