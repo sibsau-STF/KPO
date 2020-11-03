@@ -22,6 +22,7 @@ namespace КПО_ЛР3
 		}
 		VideoReceiver vr1, vr2;
 		ComponentsParser componentsParser = new ComponentsParser();
+		Form2 pluginsInfo = new Form2();
 		private void button1_Click(object sender, EventArgs e)
 		{			
 			vr1.Start();
@@ -55,16 +56,25 @@ namespace КПО_ЛР3
 
 		private void Form1_Load(object sender, EventArgs e)
 		{
-			vr1 = new VideoReceiver(pictureBox1, "http://95.143.219.190/mjpg/video.mjpg", comboBox1);
-			vr2 = new VideoReceiver(pictureBox2, "http://92.106.223.122/mjpg/video.mjpg", comboBox2);
-			componentsParser.AddPanel("TESTPANEL1", flowLayoutPanel1);
-			componentsParser.AddPlugin("TESTPLUGIN1");
-			componentsParser.parseComponentsFromPlugin("TESTPLUGIN1", "TESTPANEL1,LABEL,TESTLABEL1,300,20,Тестовый текст;TESTPANEL1,TEXTBOX,TESTTEXTBOX1,300,30,Тестовый текст textbox;TESTPANEL1,TRACKBAR,TRACKBAR1,300,30,Тестовый trackbar,0,30");			
+			vr2 = new VideoReceiver(pictureBox2, "http://92.106.223.122/mjpg/video.mjpg", comboBox2, componentsParser);
+			componentsParser.AddPanel("MAIN", flowLayoutPanel1);
+			componentsParser.AddPanel("INFOPANEL", pluginsInfo.flowLayoutPanel1);
+			componentsParser.parseComponentsFromPlugin("OFF", "MAIN,LABEL,TESTLABEL2,300,20,Тестовый текст");
 		}
 
 		private void bindingNavigator1_RefreshItems(object sender, EventArgs e)
 		{
 
+		}
+
+		private void button1_Click_1(object sender, EventArgs e)
+		{
+			pluginsInfo.Show();
+		}
+
+		private void comboBox2_SelectedIndexChanged(object sender, EventArgs e)
+		{
+			if (vr2 != null) vr2.pluginOn();
 		}
 
 		private void button4_Click(object sender, EventArgs e)

@@ -10,5 +10,6 @@ DLLEXPORT char* FunctionsDescriptions(char* str);
 DLLEXPORT char* FunctionsInterfaceCFG(char* str);
 DLLEXPORT char* FunctionsType(char* str);
 
-DLLEXPORT char* getInfo();
-DLLEXPORT BYTE* filterFunct(BYTE* array, int length);
+DLLEXPORT char* getName(char* str);
+DLLEXPORT char* getIdName(char* str);
+DLLEXPORT char* filterFunct(char* array, int length);

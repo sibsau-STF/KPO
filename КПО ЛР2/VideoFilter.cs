@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -13,11 +14,12 @@ namespace КПО_ЛР3
 	{
 		List<VideoFilter> videoFilters = new List<VideoFilter>();
 		ComboBox comboBox;
-		public VideoFilters(ComboBox comboBox)
+		ComponentsParser componentsParser;
+		public VideoFilters(ComboBox comboBox, ComponentsParser componentsParser)
 		{
 			this.comboBox = comboBox;
-			VideoFilter last;
-			last = new VideoFilter("Отключён", (byte[] array, int length) => array);
+			this.componentsParser = componentsParser;
+			VideoFilter last = new VideoFilter("Отключён", "OFF", componentsParser);
 			videoFilters.Add(last);
 			comboBox.Invoke((MethodInvoker)delegate
 			{
@@ -27,7 +29,7 @@ namespace КПО_ЛР3
 			string[] allfiles = Directory.GetFiles(Directory.GetCurrentDirectory(), "*.dll");
 			foreach (string filename in allfiles)
 			{
-				last = new VideoFilter(filename);
+				last = new VideoFilter(filename, componentsParser);
 				if (last.Name != null)
 				{
 					videoFilters.Add(last);
@@ -39,13 +41,18 @@ namespace КПО_ЛР3
 			}			
 		}
 
-		public byte[] Filter(byte[] array)
+		int selectedIndex = 0;
+		public void pluginOn()
 		{
-			int selectedIndex = 0;
 			comboBox.Invoke((MethodInvoker)delegate
 			{
-				selectedIndex = comboBox.SelectedIndex;				
+				selectedIndex = comboBox.SelectedIndex;
 			});
+			componentsParser.pluginOn(videoFilters[selectedIndex].IdName);
+		}
+
+		public byte[] Filter(byte[] array)
+		{
 			return videoFilters[selectedIndex].filterFunct(array, array.Length);				 
 		}
 	}
@@ -70,54 +77,103 @@ namespace КПО_ЛР3
 		public delegate byte[] FilterFunct(byte[] array, int lenth);
 
 		[UnmanagedFunctionPointer(CallingConvention.Cdecl)]
-		delegate IntPtr DllGetInfo();
+		delegate IntPtr DllStringString(byte[] charArray);
 
 		[UnmanagedFunctionPointer(CallingConvention.Cdecl)]
-		delegate int Calc();
+		public delegate string StringString(string argsString);
 
-		# endregion importsDLL
+		[UnmanagedFunctionPointer(CallingConvention.Cdecl)]
+		public delegate string StringVoid();
 
+		#endregion importsDLL
 
 		string dllPath;
 		string name = null;
+		string idName = null;
+		int? pointerDll = null;
+		ComponentsParser componentsParser;
+		Dictionary<string, StringString> pluginFunctions = new Dictionary<string, StringString>();
 		public string Name { get { return name; } }
+		public string IdName { get { return idName; } }
 
-		public FilterFunct filterFunct;		
-		public VideoFilter(string name, FilterFunct filterFunct)
+		public FilterFunct filterFunct = (byte[] array, int length) => array;		
+		public VideoFilter(string name, string idName, ComponentsParser componentsParser)
 		{
 			this.name = name;
-			this.filterFunct = filterFunct;
+			this.idName = idName;
+			this.componentsParser = componentsParser;
+			componentsParser.AddPanel(this.idName + "MAIN");
 		}
-		public VideoFilter(string dllPath)
+		public VideoFilter(string dllPath, ComponentsParser componentsParser)
 		{
-			
+			this.componentsParser = componentsParser;
 			this.dllPath = dllPath;
-			int pDll = LoadLibrary(dllPath);
-			IntPtr getProc;
-			if (pDll != null)
+			this.pointerDll = LoadLibrary(dllPath);
+
+			DllStringString getIdName = getSSFunctFromDLL("getIdName");
+			DllStringString getName = getSSFunctFromDLL("getName");
+			if (getIdName != null && getName != null)
 			{
-				getProc = GetProcAddress(pDll, "getInfo");
+				this.idName = callSSFunct(getIdName);
+				this.name = callSSFunct(getName);
+				componentsParser.AddPanel(this.idName + "MAIN");
+				parseFunctions();
+				this.filterFunct = getFilterFunctDLL();
+			}
+		}
+
+		void parseFunctions()
+		{			
+			string pluginFunctionsString = callSSFunct("pluginFunctions");
+			string[] parsedPluginFunctionsString = pluginFunctionsString.Split(' ');
+			foreach (var function in parsedPluginFunctionsString)
+			{				
+				componentsParser.parseComponentsFromPlugin(this.idName, callSSFunct("functionsInterfaceCFG", function));
+				//TODO: pluginFunctions.Add(function, getSSFunction() 
+			}
+		}
+
+		FilterFunct getFilterFunctDLL()
+		{
+			IntPtr getProc = GetProcAddress((int)(this.pointerDll), "filterFunct");
+			return (byte[] array, int Length) =>
+			{
+				FilterFunctDLL funct = (FilterFunctDLL)Marshal.GetDelegateForFunctionPointer(getProc, typeof(FilterFunctDLL));
+				byte[] tmpByte = new byte[array.Length];
+				Marshal.Copy(funct(array, array.Length), tmpByte, 0, array.Length);
+				return tmpByte;
+			};
+			//TODO: Переделать на строковый тип
+		}
+
+		string callSSFunct(string functName, string argsString = "")
+		{
+			return callSSFunct(getSSFunctFromDLL(functName), argsString);
+		}
+		string callSSFunct(DllStringString funct, string argsString = "")
+		{
+			return getSSFunction(funct)(argsString);
+		}
+		StringString getSSFunction(string functName)
+		{
+			return (string argsString) => { return Marshal.PtrToStringAnsi(getSSFunctFromDLL(functName)(Encoding.ASCII.GetBytes(argsString))); };
+		}
+		StringString getSSFunction(DllStringString funct)
+		{
+			return (string argsString) => { return Marshal.PtrToStringAnsi(funct(Encoding.ASCII.GetBytes(argsString))); };
+		}
+		DllStringString getSSFunctFromDLL(string functName)
+		{
+			if (this.pointerDll != null)
+			{
+				IntPtr getProc = GetProcAddress((int)(this.pointerDll), functName);
 				if ((int)getProc != 0)
 				{
-					DllGetInfo GetInfo = (DllGetInfo)Marshal.GetDelegateForFunctionPointer(getProc, typeof(DllGetInfo));
-					string tmpResult = Marshal.PtrToStringAnsi(GetInfo());
-					if (tmpResult != "" && tmpResult != null)
-					{
-						name = tmpResult;
-						getProc = GetProcAddress(pDll, "filterFunct");
-						if ((int)getProc != 0)
-						{
-							
-							filterFunct = (byte[] array, int Length) => {
-								FilterFunctDLL funct = (FilterFunctDLL)Marshal.GetDelegateForFunctionPointer(getProc, typeof(FilterFunctDLL));
-								byte[] tmpByte = new byte[array.Length];
-								Marshal.Copy(funct(array, array.Length), tmpByte, 0, array.Length);								
-								return tmpByte;
-							};						
-						}
-					}
+					return (DllStringString)Marshal.GetDelegateForFunctionPointer(getProc, typeof(DllStringString));
 				}
 			}
+			//MessageBox.Show("Ошибка загрузки функции " + this.dllPath + " " + functName);
+			return null;
 		}
 	}
 }

@@ -3,9 +3,11 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Drawing;
 using System.Linq;
+using System.Runtime.Remoting.Messaging;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using static КПО_ЛР3.VideoFilter;
 
 namespace КПО_ЛР3
 {
@@ -13,25 +15,29 @@ namespace КПО_ЛР3
 	{
 		Dictionary<string, FlowLayoutPanel> panels = new Dictionary<string, FlowLayoutPanel>();
 		Dictionary<string, Control> components = new Dictionary<string, Control>();
-		Dictionary<string, Dictionary<string, Control>> pluginsComponents = new Dictionary<string, Dictionary<string, Control>>();
-		public ComponentsParser()
-		{
-			
-		}
-		
+		//TODO: Удалить, если не пригодится
+		//Dictionary<string, Dictionary<string, Control>> pluginsComponents = new Dictionary<string, Dictionary<string, Control>>();
+
 		public void AddPanel(string name, FlowLayoutPanel flowLayoutPanel)
 		{
 			panels.Add(name, flowLayoutPanel);
 		}
-
-		public void AddPlugin(string pluginName)
+		public void AddPanel(string name)
 		{
-			pluginsComponents.Add(pluginName, new Dictionary<string, Control>());
+			var newPanel = new FlowLayoutPanel();
+			newPanel.AutoSize = true;
+			newPanel.Name = name;
+			panels.Add(name, newPanel);
 		}
+
+		//public void AddPlugin(string pluginName)
+		//{
+		//	pluginsComponents.Add(pluginName, new Dictionary<string, Control>());
+		//}
 
 		void AddPluginComponent(string pluginName, string componentName, Control component)
 		{
-			pluginsComponents[pluginName].Add(componentName, component);
+			//pluginsComponents[pluginName].Add(componentName, component);
 			components.Add(componentName, component);
 		}
 
@@ -50,7 +56,7 @@ namespace КПО_ЛР3
 		{
 			Control component;
 			string[] splitedComponentInfo = componentInfo.Split(',');
-			switch(splitedComponentInfo[1])
+			switch (splitedComponentInfo[1])
 			{
 				case "LABEL":
 					component = new Label();
@@ -95,13 +101,24 @@ namespace КПО_ЛР3
 						break;
 					case "System.Windows.Forms.TrackBar":
 						argsString.Append(";" + ((TrackBar)components[componentName]).Value);
-						break;						
+						break;
 					default:
 						argsString.Append(";" + components[componentName].Text);
 						break;
 				}
 			}
 			return argsString.ToString().Trim(';');
+		}
+
+		public void pluginOn(string pluginName)
+		{
+			panels["MAIN"].Controls.Clear();
+			panels["MAIN"].Controls.Add(panels[pluginName + "MAIN"]);
+		}
+
+		public void addOnClickEvent(string componentName, StringString funct, StringVoid argsFunct)
+		{
+			components[componentName].Click += (object sender, EventArgs e) => { funct(argsFunct()); } ;
 		}
 	}
 }

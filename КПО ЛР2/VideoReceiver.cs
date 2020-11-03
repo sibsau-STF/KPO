@@ -18,11 +18,11 @@ namespace КПО_ЛР3
 		bool isWorked = true;
 		StreamDecoder decoder = null;
 		VideoFilters videoFilters;
-		public VideoReceiver(PictureBox pictureBox, string url, ComboBox comboBox)
+		public VideoReceiver(PictureBox pictureBox, string url, ComboBox comboBox, ComponentsParser componentsParser)
 		{
 			this.pictureBox = pictureBox;
 			this.url = url;
-			videoFilters = new VideoFilters(comboBox);
+			videoFilters = new VideoFilters(comboBox, componentsParser);
 		}
 		private void OnFrameReceived(object sender, FrameReceivedEventArgs e)
 		{
@@ -79,8 +79,9 @@ namespace КПО_ЛР3
 			else MessageBox.Show("Просмотр выключен, невозможно поставить на паузу");
 			
 		}
-
-
-
+		public void pluginOn()
+		{
+			videoFilters.pluginOn();
+		}
 	}
 }
