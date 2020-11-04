@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Drawing;
+using System.Drawing.Imaging;
 using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices;
@@ -15,45 +17,64 @@ namespace КПО_ЛР3
 		List<VideoFilter> videoFilters = new List<VideoFilter>();
 		ComboBox comboBox;
 		ComponentsParser componentsParser;
+		int selectedIndex = 0;
+
+		public event Action frameFilterEnd;
+		public event Action frameFilterStart;
+
 		public VideoFilters(ComboBox comboBox, ComponentsParser componentsParser)
 		{
 			this.comboBox = comboBox;
 			this.componentsParser = componentsParser;
-			VideoFilter last = new VideoFilter("Отключён", "OFF", componentsParser);
-			videoFilters.Add(last);
+			VideoFilter videoFilter = new VideoFilter("Отключён", "OFF", componentsParser);
+			videoFilters.Add(videoFilter);
 			comboBox.Invoke((MethodInvoker)delegate
 			{
-				comboBox.Items.Add(last.Name);
+				comboBox.Items.Add(videoFilter.Name);
 				comboBox.SelectedIndex = 0;
 			});
 			string[] allfiles = Directory.GetFiles(Directory.GetCurrentDirectory(), "*.dll");
-			foreach (string filename in allfiles)
+			foreach (string path in allfiles)
 			{
-				last = new VideoFilter(filename, componentsParser);
-				if (last.Name != null)
-				{
-					videoFilters.Add(last);
-					comboBox.Invoke((MethodInvoker)delegate
-					{
-						comboBox.Items.Add(last.Name);
-					});
-				}
+				addVideoFilterFromPath(path);
 			}			
 		}
 
-		int selectedIndex = 0;
+		public void addVideoFilterFromPath(string path)
+		{
+			VideoFilter videoFilter = new VideoFilter(path, componentsParser);
+			if (videoFilter.IdName != null)
+			{
+				videoFilters.Add(videoFilter);
+				comboBox.Invoke((MethodInvoker)delegate
+				{
+					comboBox.Items.Add(videoFilter.Name);
+				});
+				componentsParser.parseComponents("INFOPANEL,LABEL," + videoFilter.IdName + "INFOLABEL,600,400," + videoFilter.PluginInfo);
+			}
+		}
+
 		public void pluginOn()
 		{
+			videoFilters[selectedIndex].unsubscribeFunctions(ref frameFilterEnd, ref frameFilterStart);
 			comboBox.Invoke((MethodInvoker)delegate
 			{
 				selectedIndex = comboBox.SelectedIndex;
 			});
+			videoFilters[selectedIndex].subscribeFunctions(ref frameFilterEnd, ref frameFilterStart);
 			componentsParser.pluginOn(videoFilters[selectedIndex].IdName);
 		}
 
-		public byte[] Filter(byte[] array)
+		public Bitmap Filter(Bitmap img)
 		{
-			return videoFilters[selectedIndex].filterFunct(array, array.Length);				 
+			frameFilterStart?.Invoke();
+			var sourceBuffer = new MemoryStream();
+			img.Save(sourceBuffer, ImageFormat.Bmp);
+			byte[] sourceMap = sourceBuffer.ToArray();
+			byte[] resultMap = videoFilters[selectedIndex].filterFunct(sourceMap, sourceMap.Length);
+			var resultBuffer = new MemoryStream(resultMap);
+			frameFilterEnd?.Invoke();
+			return new Bitmap(Image.FromStream(resultBuffer));			 
 		}
 	}
 	class VideoFilter
@@ -71,7 +92,7 @@ namespace КПО_ЛР3
 		static extern bool FreeLibrary(int hModule);
 
 		[UnmanagedFunctionPointer(CallingConvention.Cdecl)]
-		public delegate IntPtr FilterFunctDLL(byte[] array, int lenth);
+		public delegate IntPtr FilterFunctDLL(byte[] array, int lenth, char[] args);
 
 		[UnmanagedFunctionPointer(CallingConvention.Cdecl)]
 		public delegate byte[] FilterFunct(byte[] array, int lenth);
@@ -91,10 +112,19 @@ namespace КПО_ЛР3
 		string name = null;
 		string idName = null;
 		int? pointerDll = null;
+		string version = "";
+		string author = "";
 		ComponentsParser componentsParser;
 		Dictionary<string, StringString> pluginFunctions = new Dictionary<string, StringString>();
+
+		Dictionary<string, Action> triggerFunctionsStart = new Dictionary<string, Action>();
+		Dictionary<string, Action> triggerFunctionsEnd = new Dictionary<string, Action>();
+
+		StringBuilder pluginInfoString = new StringBuilder();
+
 		public string Name { get { return name; } }
 		public string IdName { get { return idName; } }
+		public string PluginInfo { get { return pluginInfoString.ToString(); } }
 
 		public FilterFunct filterFunct = (byte[] array, int length) => array;		
 		public VideoFilter(string name, string idName, ComponentsParser componentsParser)
@@ -116,34 +146,98 @@ namespace КПО_ЛР3
 			{
 				this.idName = callSSFunct(getIdName);
 				this.name = callSSFunct(getName);
+				this.version = callSSFunct("getVersion");
+				this.author = callSSFunct("getAuthor");
+				createPluginInfoString();
 				componentsParser.AddPanel(this.idName + "MAIN");
 				parseFunctions();
-				this.filterFunct = getFilterFunctDLL();
+				pluginInfoString.Append("=====================================================================\r\n");
 			}
+		}
+
+		void createPluginInfoString()
+		{
+			pluginInfoString.Append("UUID: " + this.idName + "\r\n");
+			pluginInfoString.Append("Название: " + this.name + "\r\n");
+			pluginInfoString.Append("Версия: " + this.version + "\r\n");
+			pluginInfoString.Append("Автор: " + this.author + "\r\n");
 		}
 
 		void parseFunctions()
 		{			
 			string pluginFunctionsString = callSSFunct("pluginFunctions");
 			string[] parsedPluginFunctionsString = pluginFunctionsString.Split(' ');
-			foreach (var function in parsedPluginFunctionsString)
+			foreach (var functionIdName in parsedPluginFunctionsString)
 			{				
-				componentsParser.parseComponentsFromPlugin(this.idName, callSSFunct("functionsInterfaceCFG", function));
-				//TODO: pluginFunctions.Add(function, getSSFunction() 
+				componentsParser.parseComponents(callSSFunct("functionsInterfaceCFG", functionIdName));
+
+				StringString function = getSSFunction(functionIdName);
+				string functionArgsString = callSSFunct("functionsArgs", functionIdName);
+				string functionTypeString = callSSFunct("functionsType", functionIdName);
+				string functionTargetString = callSSFunct("functionsTarget", functionIdName);
+				pluginFunctions.Add(functionIdName, function);
+				if (functionTypeString != "MAIN")
+				{
+					Action action = () => { componentsParser.setComponentsValue(functionTargetString, function(componentsParser.createArgsString(functionArgsString))); };
+					if (functionTypeString == "TRIGGEREND")
+					{
+						triggerFunctionsEnd.Add(functionIdName, action);
+					}
+					else if (functionTypeString == "TRIGGERSTART")
+					{
+						triggerFunctionsStart.Add(functionIdName, action);
+					}
+					else if (functionTypeString == "NONE")
+					{	}
+					else
+					{
+						componentsParser.addOnClickEvent(functionTypeString, action);
+					}
+				}
+				else
+				{
+					this.filterFunct = getFilterFunctDLL(functionArgsString);
+				}
+				pluginInfoString.Append(functionIdName + " - " + callSSFunct("functionsDescriptions", functionIdName) + "\r\n");
 			}
 		}
 
-		FilterFunct getFilterFunctDLL()
+
+
+		FilterFunct getFilterFunctDLL(string argsString)
 		{
 			IntPtr getProc = GetProcAddress((int)(this.pointerDll), "filterFunct");
 			return (byte[] array, int Length) =>
 			{
 				FilterFunctDLL funct = (FilterFunctDLL)Marshal.GetDelegateForFunctionPointer(getProc, typeof(FilterFunctDLL));
 				byte[] tmpByte = new byte[array.Length];
-				Marshal.Copy(funct(array, array.Length), tmpByte, 0, array.Length);
+				Marshal.Copy(funct(array, array.Length, componentsParser.createArgsString(argsString).ToCharArray()), tmpByte, 0, array.Length);
 				return tmpByte;
 			};
-			//TODO: Переделать на строковый тип
+		}
+
+		public void subscribeFunctions(ref Action frameFilterEnd, ref Action frameFilterStart)
+		{
+			foreach (var triggerFunctEnd in triggerFunctionsEnd)
+			{
+				frameFilterEnd += triggerFunctEnd.Value;
+			}
+			foreach (var triggerFunctStart in triggerFunctionsStart)
+			{
+				frameFilterStart += triggerFunctStart.Value;
+			}
+		}
+
+		public void unsubscribeFunctions(ref Action frameFilterEnd, ref Action frameFilterStart)
+		{
+			foreach (var triggerFunctEnd in triggerFunctionsEnd)
+			{
+				frameFilterEnd -= triggerFunctEnd.Value;
+			}
+			foreach (var triggerFunctStart in triggerFunctionsStart)
+			{
+				frameFilterStart -= triggerFunctStart.Value;
+			}
 		}
 
 		string callSSFunct(string functName, string argsString = "")

@@ -33,11 +33,13 @@
 			this.button4 = new System.Windows.Forms.Button();
 			this.button5 = new System.Windows.Forms.Button();
 			this.button6 = new System.Windows.Forms.Button();
-			this.button7 = new System.Windows.Forms.Button();
 			this.comboBox2 = new System.Windows.Forms.ComboBox();
 			this.trackBar1 = new System.Windows.Forms.TrackBar();
 			this.flowLayoutPanel1 = new System.Windows.Forms.FlowLayoutPanel();
 			this.button1 = new System.Windows.Forms.Button();
+			this.button7 = new System.Windows.Forms.Button();
+			this.button2 = new System.Windows.Forms.Button();
+			this.openFileDialog1 = new System.Windows.Forms.OpenFileDialog();
 			((System.ComponentModel.ISupportInitialize)(this.pictureBox2)).BeginInit();
 			((System.ComponentModel.ISupportInitialize)(this.trackBar1)).BeginInit();
 			this.SuspendLayout();
@@ -88,20 +90,10 @@
 			this.button6.UseVisualStyleBackColor = true;
 			this.button6.Click += new System.EventHandler(this.button6_Click);
 			// 
-			// button7
-			// 
-			this.button7.Location = new System.Drawing.Point(766, 467);
-			this.button7.Name = "button7";
-			this.button7.Size = new System.Drawing.Size(75, 23);
-			this.button7.TabIndex = 9;
-			this.button7.Text = "button7";
-			this.button7.UseVisualStyleBackColor = true;
-			this.button7.Click += new System.EventHandler(this.button7_Click);
-			// 
 			// comboBox2
 			// 
 			this.comboBox2.FormattingEnabled = true;
-			this.comboBox2.Location = new System.Drawing.Point(720, 12);
+			this.comboBox2.Location = new System.Drawing.Point(615, 14);
 			this.comboBox2.Name = "comboBox2";
 			this.comboBox2.Size = new System.Drawing.Size(121, 21);
 			this.comboBox2.TabIndex = 11;
@@ -124,19 +116,45 @@
 			// 
 			// button1
 			// 
-			this.button1.Location = new System.Drawing.Point(678, 57);
+			this.button1.Location = new System.Drawing.Point(743, 14);
 			this.button1.Name = "button1";
-			this.button1.Size = new System.Drawing.Size(163, 36);
+			this.button1.Size = new System.Drawing.Size(98, 36);
 			this.button1.TabIndex = 15;
 			this.button1.Text = "Информация о плагинах";
 			this.button1.UseVisualStyleBackColor = true;
 			this.button1.Click += new System.EventHandler(this.button1_Click_1);
+			// 
+			// button7
+			// 
+			this.button7.Location = new System.Drawing.Point(766, 467);
+			this.button7.Name = "button7";
+			this.button7.Size = new System.Drawing.Size(75, 23);
+			this.button7.TabIndex = 9;
+			this.button7.Text = "button7";
+			this.button7.UseVisualStyleBackColor = true;
+			this.button7.Click += new System.EventHandler(this.button7_Click);
+			// 
+			// button2
+			// 
+			this.button2.Location = new System.Drawing.Point(743, 56);
+			this.button2.Name = "button2";
+			this.button2.Size = new System.Drawing.Size(98, 37);
+			this.button2.TabIndex = 16;
+			this.button2.Text = "Добавить плагин";
+			this.button2.UseVisualStyleBackColor = true;
+			this.button2.Click += new System.EventHandler(this.button2_Click_1);
+			// 
+			// openFileDialog1
+			// 
+			this.openFileDialog1.FileName = "openFileDialog1";
+			this.openFileDialog1.Filter = "Файлы плагинов(*.dll)|*.dll";
 			// 
 			// Form1
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
 			this.ClientSize = new System.Drawing.Size(859, 503);
+			this.Controls.Add(this.button2);
 			this.Controls.Add(this.button1);
 			this.Controls.Add(this.flowLayoutPanel1);
 			this.Controls.Add(this.trackBar1);
@@ -163,11 +181,13 @@
 		private System.Windows.Forms.Button button4;
 		private System.Windows.Forms.Button button5;
 		private System.Windows.Forms.Button button6;
-		private System.Windows.Forms.Button button7;
 		private System.Windows.Forms.ComboBox comboBox2;
 		private System.Windows.Forms.TrackBar trackBar1;
 		private System.Windows.Forms.FlowLayoutPanel flowLayoutPanel1;
 		private System.Windows.Forms.Button button1;
+		private System.Windows.Forms.Button button7;
+		private System.Windows.Forms.Button button2;
+		private System.Windows.Forms.OpenFileDialog openFileDialog1;
 	}
 }
 

@@ -60,6 +60,7 @@
     <Compile Include="Form2.Designer.cs">
       <DependentUpon>Form2.cs</DependentUpon>
     </Compile>
+    <Compile Include="Helpers.cs" />
     <Compile Include="MJPEG\FrameReceivedEventArgs.cs" />
     <Compile Include="MJPEG\IStreamDecoder.cs" />
     <Compile Include="Program.cs" />

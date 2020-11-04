@@ -56,10 +56,9 @@ namespace КПО_ЛР3
 
 		private void Form1_Load(object sender, EventArgs e)
 		{
-			vr2 = new VideoReceiver(pictureBox2, "http://92.106.223.122/mjpg/video.mjpg", comboBox2, componentsParser);
 			componentsParser.AddPanel("MAIN", flowLayoutPanel1);
 			componentsParser.AddPanel("INFOPANEL", pluginsInfo.flowLayoutPanel1);
-			componentsParser.parseComponentsFromPlugin("OFF", "MAIN,LABEL,TESTLABEL2,300,20,Тестовый текст");
+			vr2 = new VideoReceiver(pictureBox2, "http://92.106.223.122/mjpg/video.mjpg", comboBox2, componentsParser);
 		}
 
 		private void bindingNavigator1_RefreshItems(object sender, EventArgs e)
@@ -75,6 +74,14 @@ namespace КПО_ЛР3
 		private void comboBox2_SelectedIndexChanged(object sender, EventArgs e)
 		{
 			if (vr2 != null) vr2.pluginOn();
+		}
+
+		private void button2_Click_1(object sender, EventArgs e)
+		{
+			if (openFileDialog1.ShowDialog() == DialogResult.OK)
+			{
+				vr2.addVideoFilterFromPath(openFileDialog1.FileName);
+			}
 		}
 
 		private void button4_Click(object sender, EventArgs e)

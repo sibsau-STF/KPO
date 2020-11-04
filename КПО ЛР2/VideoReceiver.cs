@@ -30,17 +30,10 @@ namespace КПО_ЛР3
 			{
 				if (isWorked)
 				{
-					Bitmap bm = new Bitmap(Image.FromStream(ms));
-					var ms2 = new MemoryStream();
-					bm.Save(ms2, ImageFormat.Bmp);
-					byte[] newMap = videoFilters.Filter(ms2.ToArray());
-					using (var ms3 = new MemoryStream(newMap))
+					pictureBox.Invoke((MethodInvoker)delegate
 					{
-						pictureBox.Invoke((MethodInvoker)delegate
-						{
-							pictureBox.Image = Image.FromStream(ms3);
-						});
-					}						
+						pictureBox.Image = videoFilters.Filter(new Bitmap(Image.FromStream(ms)));
+					});				
 				}
 			}
 		}		
@@ -83,5 +76,10 @@ namespace КПО_ЛР3
 		{
 			videoFilters.pluginOn();
 		}
+
+		public void addVideoFilterFromPath(string path)
+		{
+			videoFilters.addVideoFilterFromPath(path);
+	}
 	}
 }

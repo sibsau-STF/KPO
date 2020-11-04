@@ -15,8 +15,6 @@ namespace КПО_ЛР3
 	{
 		Dictionary<string, FlowLayoutPanel> panels = new Dictionary<string, FlowLayoutPanel>();
 		Dictionary<string, Control> components = new Dictionary<string, Control>();
-		//TODO: Удалить, если не пригодится
-		//Dictionary<string, Dictionary<string, Control>> pluginsComponents = new Dictionary<string, Dictionary<string, Control>>();
 
 		public void AddPanel(string name, FlowLayoutPanel flowLayoutPanel)
 		{
@@ -30,24 +28,18 @@ namespace КПО_ЛР3
 			panels.Add(name, newPanel);
 		}
 
-		//public void AddPlugin(string pluginName)
-		//{
-		//	pluginsComponents.Add(pluginName, new Dictionary<string, Control>());
-		//}
-
-		void AddPluginComponent(string pluginName, string componentName, Control component)
+		void AddPluginComponent(string componentName, Control component)
 		{
-			//pluginsComponents[pluginName].Add(componentName, component);
 			components.Add(componentName, component);
 		}
 
-		public void parseComponentsFromPlugin(string pluginName, string pluginComponentsInfo)
+		public void parseComponents(string pluginComponentsInfo)
 		{
 			string[] splitedPluginComponentsInfo = pluginComponentsInfo.Split(';');
 			foreach (var componentInfo in splitedPluginComponentsInfo)
 			{
 				Control tmpControl = parseComponentInfo(componentInfo);
-				AddPluginComponent(pluginName, tmpControl.Name, tmpControl);
+				AddPluginComponent(tmpControl.Name, tmpControl);
 			}
 		}
 
@@ -60,11 +52,9 @@ namespace КПО_ЛР3
 			{
 				case "LABEL":
 					component = new Label();
-					//TODO: добавление персональных параметров
 					break;
 				case "TEXTBOX":
 					component = new TextBox();
-					//TODO: добавление персональных параметров
 					break;
 				case "TRACKBAR":
 					var trackBar = new TrackBar();
@@ -74,7 +64,6 @@ namespace КПО_ЛР3
 					break;
 				default:
 					component = new Label();
-					//TODO: добавление персональных параметров
 					break;
 			}
 			component.Name = splitedComponentInfo[2];
@@ -86,6 +75,7 @@ namespace КПО_ЛР3
 
 		public string createArgsString(string componentNames)
 		{
+			if (componentNames == "") return "";
 			string[] parsedComponentNames = componentNames.Split(' ');
 			StringBuilder argsString = new StringBuilder();
 			foreach (var componentName in parsedComponentNames)
@@ -110,15 +100,20 @@ namespace КПО_ЛР3
 			return argsString.ToString().Trim(';');
 		}
 
+		public void setComponentsValue(string componentName, string value)
+		{
+			components[componentName].Text = value;
+		}
+
 		public void pluginOn(string pluginName)
 		{
 			panels["MAIN"].Controls.Clear();
 			panels["MAIN"].Controls.Add(panels[pluginName + "MAIN"]);
 		}
 
-		public void addOnClickEvent(string componentName, StringString funct, StringVoid argsFunct)
+		public void addOnClickEvent(string componentName, Action funct)
 		{
-			components[componentName].Click += (object sender, EventArgs e) => { funct(argsFunct()); } ;
+			components[componentName].Click += (object sender, EventArgs e) => { funct(); } ;
 		}
 	}
 }
