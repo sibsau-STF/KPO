@@ -16,7 +16,7 @@ DLLEXPORT char* pluginFunctions()
 //Описание функции в описании плагина
 DLLEXPORT char* functionsDescriptions(char* str)
 {
-    if (strcmp(str, "filterFunct") == 0) return "Функция сдвига цвета";
+    if (strcmp(str, "filterFunct") == 0) return "Функция инверсии цвета";
     if (strcmp(str, "lastTime") == 0) return "Возвращает последнее время обработки";
 }
 
@@ -26,14 +26,14 @@ DLLEXPORT char* functionsDescriptions(char* str)
 //INFOPANEL - панель в окне информации о плагинах
 DLLEXPORT char* functionsInterfaceCFG(char* str)
 {
-    if (strcmp(str, "filterFunct") == 0) return "SHIFTCOLORMAIN,LABEL,SHIFTCOLORLABEL1,300,20,Величина сдвига;SHIFTCOLORMAIN,TRACKBAR,SHIFTCOLORTRACKBAR1,300,30,Величина сдвига,0,255";
-    if (strcmp(str, "lastTime") == 0) return "SHIFTCOLORMAIN,LABEL,SHIFTCOLORLABEL2,300,20,Время обработки кадра:";
+    if (strcmp(str, "filterFunct") == 0) return "";
+    if (strcmp(str, "lastTime") == 0) return "INVERSECOLORMAIN,LABEL,INVERSECOLORLABEL1,300,20,Время обработки кадра:";
 }
 
 //Компонент или список компонентов через пробел, из которых берутся аргументы, "" если не требуется
 DLLEXPORT char* functionsArgs(char* str)
 {
-    if (strcmp(str, "filterFunct") == 0) return "SHIFTCOLORTRACKBAR1";
+    if (strcmp(str, "filterFunct") == 0) return "";
     if (strcmp(str, "lastTime") == 0) return "";
 }
 
@@ -53,19 +53,19 @@ DLLEXPORT char* functionsType(char* str)
 DLLEXPORT char* functionsTarget(char* str)
 {
     if (strcmp(str, "filterFunct") == 0) return "";
-    if (strcmp(str, "lastTime") == 0) return "SHIFTCOLORLABEL2";
+    if (strcmp(str, "lastTime") == 0) return "INVERSECOLORLABEL1";
 }
 
 //Информация о плагине
 //Имя
 DLLEXPORT char* getName(char* str)
 {
-    return "Сдвиг цвета";
+    return "Инверсия цвета";
 }
 //Уникальный идентефикатор
 DLLEXPORT char* getIdName(char* str) 
 {
-    return "SHIFTCOLOR";
+    return "INVERSECOLOR";
 }
 //Автор
 DLLEXPORT char* getAuthor(char* str)
@@ -80,32 +80,14 @@ DLLEXPORT char* getVersion(char* str)
 
 //Непосредственная реализация функций
 
-std::vector<std::string> split(const std::string& s, char delimiter) {
-    std::vector<std::string> tokens;
-    std::string token;
-    std::istringstream tokenStream(s);
-    while (std::getline(tokenStream, token, delimiter))
-    {
-        tokens.push_back(token);
-    }
-    return tokens;
-}
-
 char* buffer = new char[100];
 double lastTimeValue = 0;
 
 DLLEXPORT char* filterFunct(char* array, int length, char* args) {
-    std::vector<std::string> splitedArgs = split(args, ';');
-    int* argsArray = new int[splitedArgs.size()];
-    for (size_t i = 0; i < splitedArgs.size(); i++)
-    {
-        argsArray[i] = atoi(splitedArgs[i].c_str());
-    }
-    int a = argsArray[0];
     double start = clock();
     for (int i = 1079; i < length; i++)
     {
-        array[i] = (unsigned char)(array[i] + a);
+        array[i] = (unsigned char)(255 - array[i]);
     }
     double end = clock();
     lastTimeValue = (double)(end - start) / CLOCKS_PER_SEC;

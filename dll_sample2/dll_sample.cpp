@@ -16,7 +16,7 @@ DLLEXPORT char* pluginFunctions()
 //Описание функции в описании плагина
 DLLEXPORT char* functionsDescriptions(char* str)
 {
-    if (strcmp(str, "filterFunct") == 0) return "Функция сдвига цвета";
+    if (strcmp(str, "filterFunct") == 0) return "Функция сдвига каждого цвета";
     if (strcmp(str, "lastTime") == 0) return "Возвращает последнее время обработки";
 }
 
@@ -26,14 +26,14 @@ DLLEXPORT char* functionsDescriptions(char* str)
 //INFOPANEL - панель в окне информации о плагинах
 DLLEXPORT char* functionsInterfaceCFG(char* str)
 {
-    if (strcmp(str, "filterFunct") == 0) return "SHIFTCOLORMAIN,LABEL,SHIFTCOLORLABEL1,300,20,Величина сдвига;SHIFTCOLORMAIN,TRACKBAR,SHIFTCOLORTRACKBAR1,300,30,Величина сдвига,0,255";
-    if (strcmp(str, "lastTime") == 0) return "SHIFTCOLORMAIN,LABEL,SHIFTCOLORLABEL2,300,20,Время обработки кадра:";
+    if (strcmp(str, "filterFunct") == 0) return "SHIFTALLCOLORMAIN,LABEL,SHIFTALLCOLORLABEL1,300,20,Величина сдвига красного цвета;SHIFTALLCOLORMAIN,TRACKBAR,SHIFTALLCOLORTRACKBAR1,300,30,Величина сдвига RED,0,255;SHIFTALLCOLORMAIN,LABEL,SHIFTALLCOLORLABEL2,300,20,Величина сдвига зелёного цвета;SHIFTALLCOLORMAIN,TRACKBAR,SHIFTALLCOLORTRACKBAR2,300,30,Величина сдвига GREEN,0,255;SHIFTALLCOLORMAIN,LABEL,SHIFTALLCOLORLABEL3,300,20,Величина сдвига синего цвета;SHIFTALLCOLORMAIN,TRACKBAR,SHIFTALLCOLORTRACKBAR3,300,30,Величина сдвига BLUE,0,255";
+    if (strcmp(str, "lastTime") == 0) return "SHIFTALLCOLORMAIN,LABEL,SHIFTALLCOLORLABEL4,300,20,Время обработки кадра:";
 }
 
 //Компонент или список компонентов через пробел, из которых берутся аргументы, "" если не требуется
 DLLEXPORT char* functionsArgs(char* str)
 {
-    if (strcmp(str, "filterFunct") == 0) return "SHIFTCOLORTRACKBAR1";
+    if (strcmp(str, "filterFunct") == 0) return "SHIFTALLCOLORTRACKBAR1 SHIFTALLCOLORTRACKBAR2 SHIFTALLCOLORTRACKBAR3";
     if (strcmp(str, "lastTime") == 0) return "";
 }
 
@@ -53,19 +53,19 @@ DLLEXPORT char* functionsType(char* str)
 DLLEXPORT char* functionsTarget(char* str)
 {
     if (strcmp(str, "filterFunct") == 0) return "";
-    if (strcmp(str, "lastTime") == 0) return "SHIFTCOLORLABEL2";
+    if (strcmp(str, "lastTime") == 0) return "SHIFTALLCOLORLABEL4";
 }
 
 //Информация о плагине
 //Имя
 DLLEXPORT char* getName(char* str)
 {
-    return "Сдвиг цвета";
+    return "Сдвиг каждого цвета";
 }
 //Уникальный идентефикатор
 DLLEXPORT char* getIdName(char* str) 
 {
-    return "SHIFTCOLOR";
+    return "SHIFTALLCOLOR";
 }
 //Автор
 DLLEXPORT char* getAuthor(char* str)
@@ -101,11 +101,15 @@ DLLEXPORT char* filterFunct(char* array, int length, char* args) {
     {
         argsArray[i] = atoi(splitedArgs[i].c_str());
     }
-    int a = argsArray[0];
+    int red = argsArray[0];
+    int green = argsArray[1];
+    int blue = argsArray[2];
     double start = clock();
     for (int i = 1079; i < length; i++)
     {
-        array[i] = (unsigned char)(array[i] + a);
+        if (i % 4 == 0) array[i] = (unsigned char)(array[i] + red);
+        if (i % 4 == 3) array[i] = (unsigned char)(array[i] + green);
+        if (i % 4 == 2) array[i] = (unsigned char)(array[i] + blue);
     }
     double end = clock();
     lastTimeValue = (double)(end - start) / CLOCKS_PER_SEC;

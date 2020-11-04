@@ -52,7 +52,7 @@ namespace КПО_ЛР3
 
 		private void button1_Click_1(object sender, EventArgs e)
 		{
-			pluginsInfo.Show();
+			if (pluginsInfo.ShowDialog() == DialogResult.OK) { }
 		}
 
 		private void comboBox2_SelectedIndexChanged(object sender, EventArgs e)

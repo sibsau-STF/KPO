@@ -50,7 +50,7 @@ namespace КПО_ЛР3
 				{
 					comboBox.Items.Add(videoFilter.Name);
 				});
-				componentsParser.parseComponents("INFOPANEL,LABEL," + videoFilter.IdName + "INFOLABEL,600,400," + videoFilter.PluginInfo);
+				componentsParser.parseComponents("INFOPANEL,LABEL," + videoFilter.IdName + "INFOLABEL,600,120," + videoFilter.PluginInfo);
 			}
 		}
 

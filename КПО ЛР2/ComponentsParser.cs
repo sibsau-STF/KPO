@@ -35,6 +35,7 @@ namespace КПО_ЛР3
 
 		public void parseComponents(string pluginComponentsInfo)
 		{
+			if (pluginComponentsInfo == "") return;
 			string[] splitedPluginComponentsInfo = pluginComponentsInfo.Split(';');
 			foreach (var componentInfo in splitedPluginComponentsInfo)
 			{

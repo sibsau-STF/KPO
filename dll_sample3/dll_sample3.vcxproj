@@ -11,10 +11,10 @@
     </ProjectConfiguration>
   </ItemGroup>
   <PropertyGroup Label="Globals">
-    <ProjectGuid>{88809641-A1A6-4AA6-8893-2D6D74421F5A}</ProjectGuid>
+    <ProjectGuid>{F43346E9-491E-46D9-98E9-6373E050A9C8}</ProjectGuid>
     <Keyword>Win32Proj</Keyword>
     <RootNamespace>dll_sample</RootNamespace>
-    <ProjectName>SHIFTCOLOR</ProjectName>
+    <ProjectName>INVERSECOLOR</ProjectName>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
