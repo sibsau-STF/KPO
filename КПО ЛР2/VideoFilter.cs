@@ -126,7 +126,8 @@ namespace КПО_ЛР3
 		public string IdName { get { return idName; } }
 		public string PluginInfo { get { return pluginInfoString.ToString(); } }
 
-		public FilterFunct filterFunct = (byte[] array, int length) => array;		
+		public FilterFunct filterFunct = (byte[] array, int length) => array;	
+		
 		public VideoFilter(string name, string idName, ComponentsParser componentsParser)
 		{
 			this.name = name;
@@ -134,6 +135,7 @@ namespace КПО_ЛР3
 			this.componentsParser = componentsParser;
 			componentsParser.AddPanel(this.idName + "MAIN");
 		}
+
 		public VideoFilter(string dllPath, ComponentsParser componentsParser)
 		{
 			this.componentsParser = componentsParser;
@@ -202,8 +204,6 @@ namespace КПО_ЛР3
 			}
 		}
 
-
-
 		FilterFunct getFilterFunctDLL(string argsString)
 		{
 			IntPtr getProc = GetProcAddress((int)(this.pointerDll), "filterFunct");
@@ -211,7 +211,7 @@ namespace КПО_ЛР3
 			{
 				FilterFunctDLL funct = (FilterFunctDLL)Marshal.GetDelegateForFunctionPointer(getProc, typeof(FilterFunctDLL));
 				byte[] tmpByte = new byte[array.Length];
-				Marshal.Copy(funct(array, array.Length, componentsParser.createArgsString(argsString).ToCharArray()), tmpByte, 0, array.Length);
+				Marshal.Copy(funct(array, array.Length, (componentsParser.createArgsString(argsString) + "\0").ToCharArray()), tmpByte, 0, array.Length);
 				return tmpByte;
 			};
 		}

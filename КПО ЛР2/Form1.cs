@@ -23,20 +23,6 @@ namespace КПО_ЛР3
 		VideoReceiver vr1, vr2;
 		ComponentsParser componentsParser = new ComponentsParser();
 		Form2 pluginsInfo = new Form2();
-		private void button1_Click(object sender, EventArgs e)
-		{			
-			vr1.Start();
-		}
-
-		private void button2_Click(object sender, EventArgs e)
-		{
-			vr1.Stop();			
-		}
-
-		private void button3_Click(object sender, EventArgs e)
-		{
-			vr1.Pause();
-		}
 
 		private void button6_Click(object sender, EventArgs e)
 		{
@@ -48,23 +34,21 @@ namespace КПО_ЛР3
 			vr2.Stop();
 		}
 
-		private void button7_Click(object sender, EventArgs e)
+		private void button4_Click(object sender, EventArgs e)
 		{
-			textBox1.Text = componentsParser.createArgsString("TESTTEXTBOX1") + "\r\n";
-			textBox1.AppendText(componentsParser.createArgsString("TRACKBAR1"));
+			vr2.Pause();
 		}
 
 		private void Form1_Load(object sender, EventArgs e)
 		{
 			componentsParser.AddPanel("MAIN", flowLayoutPanel1);
 			componentsParser.AddPanel("INFOPANEL", pluginsInfo.flowLayoutPanel1);
-			vr2 = new VideoReceiver(pictureBox2, "http://92.106.223.122/mjpg/video.mjpg", comboBox2, componentsParser);
+			vr2 = new VideoReceiver(pictureBox2, "http://188.170.32.93:82/mjpg/1/video.mjpg", comboBox2, componentsParser);
 		}
 
-		private void bindingNavigator1_RefreshItems(object sender, EventArgs e)
-		{
-
-		}
+		//CAMS:
+		//http://188.170.32.93:82/mjpg/1/video.mjpg // Цветная
+		//http://92.106.223.122/mjpg/video.mjpg // Канализация
 
 		private void button1_Click_1(object sender, EventArgs e)
 		{
@@ -82,11 +66,6 @@ namespace КПО_ЛР3
 			{
 				vr2.addVideoFilterFromPath(openFileDialog1.FileName);
 			}
-		}
-
-		private void button4_Click(object sender, EventArgs e)
-		{
-			vr2.Pause();
 		}
 	}
 }

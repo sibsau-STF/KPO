@@ -80,6 +80,6 @@ namespace КПО_ЛР3
 		public void addVideoFilterFromPath(string path)
 		{
 			videoFilters.addVideoFilterFromPath(path);
-	}
+		}
 	}
 }
