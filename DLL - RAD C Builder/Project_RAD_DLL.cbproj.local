@@ -1,0 +1,10 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<BorlandProject>
+  <Transactions>
+    <Transaction>2020.10.21 17:17:26.457,=C:\Users\Енисей\Documents\Embarcadero\Studio\Projects\Project1PCH1.h</Transaction>
+    <Transaction>2020.10.21 17:17:26.640,=C:\Users\Енисей\Documents\Embarcadero\Studio\Projects\File1.cpp</Transaction>
+    <Transaction>2020.10.21 17:19:26.326,E:\7 семестр\Констр прогрм обеспечения(Зотин)\1_laba_KPO\RAD\RAD_C\RAD_DLL_C.cpp=C:\Users\Енисей\Documents\Embarcadero\Studio\Projects\File1.cpp</Transaction>
+    <Transaction>2020.10.21 17:19:53.247,E:\7 семестр\Констр прогрм обеспечения(Зотин)\1_laba_KPO\RAD\RAD_C\Project_RAD_DLL.h=C:\Users\Енисей\Documents\Embarcadero\Studio\Projects\Project1PCH1.h</Transaction>
+    <Transaction>2020.10.21 17:20:05.609,E:\7 семестр\Констр прогрм обеспечения(Зотин)\1_laba_KPO\RAD\RAD_C\Project_RAD_DLL.cbproj=C:\Users\Енисей\Documents\Embarcadero\Studio\Projects\Project1.cbproj</Transaction>
+  </Transactions>
+</BorlandProject>
