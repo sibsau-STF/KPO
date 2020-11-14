@@ -5,6 +5,9 @@
  
 #define DLLEXPORT extern "C" __declspec(dllexport)
 
-DLLEXPORT double Found_Max(far double* mas_1, far double* mas_2, int N_1, int N_2);
-DLLEXPORT double Found_Min(far double* mas_1, far double* mas_2, int N_1, int N_2);
-DLLEXPORT double Found_Max_in_dual_mass(far double** mas_1, int N_1, int N_2);
+DLLEXPORT double getMinRangeOfVector(far double* array1, far double* array2, int size);
+DLLEXPORT double getStandardDeviation(far double* array1, far double* array2, int size);
+DLLEXPORT double getAvgValue(far double** array1, int size1, int size2);
+DLLEXPORT double getMinValue(far double* array1, far double* array2, int size);
+DLLEXPORT double getVolume(far double* array1, far double* array2, int size);
+DLLEXPORT double getDispersion(far double** array1, int size1, int size2);
