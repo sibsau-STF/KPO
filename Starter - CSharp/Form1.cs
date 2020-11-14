@@ -18,12 +18,11 @@ namespace Starter___CSharp
 			InitializeComponent();
 		}
 
-
 		#region importsDLL
-		//[DllImport("Kernel32.dll")]
-		//private static extern bool QueryPerformanceCounter(out long lpPerformanceCount);
-		//[DllImport("Kernel32.dll")]
-		//private static extern bool QueryPerformanceFrequency(out long lpFrequency);
+		[DllImport("Kernel32.dll")]
+		private static extern bool QueryPerformanceCounter(out long lpPerformanceCount);
+		[DllImport("Kernel32.dll")]
+		private static extern bool QueryPerformanceFrequency(out long lpFrequency);
 
 		[DllImport("kernel32.dll", EntryPoint = "LoadLibrary")]
 		static extern int LoadLibrary(
@@ -43,37 +42,34 @@ namespace Starter___CSharp
 		public delegate double MatrixType(IntPtr[] array1, int size1, int size2);
 
 		[UnmanagedFunctionPointer(CallingConvention.Cdecl)]
-		public delegate VoidVoid VoidVoid();
-
+		public delegate void VoidVoid();
 		#endregion importsDLL
-
 
 		private void button1_Click(object sender, EventArgs e)
 		{
 			callDll("DLL - C.dll");
+			callDll("DLL - RAD C Builder.dll");
+			callDll("DLL - RAD C Delphi.dll");
 		}
 
-
-		int size = 2000000;
+		//int size = 10000000;
+		int size = 10000;
 
 		void callDll(string dllPath)
 		{
 			int pointerDll = LoadLibrary(dllPath);
 
-			IntPtr getProc = GetProcAddress((pointerDll), "test");
-			VoidVoid test = Marshal.GetDelegateForFunctionPointer<VoidVoid>(getProc);
-
 			VectorType funct1 = getVectorFunctInDll(pointerDll, "getMinRangeOfVector");
 			string timesString1 = getTimesStringVector(funct1);
 			textBox1.AppendText(timesString1 + "\r\n");
 
-			//VectorType funct2 = getVectorFunctInDll(pointerDll, "getStandardDeviation");
-			//string timesString2 = getTimesStringVector(funct2);
-			//textBox1.AppendText(timesString1 + "\r\n");
+			VectorType funct2 = getVectorFunctInDll(pointerDll, "getStandardDeviation");
+			string timesString2 = getTimesStringVector(funct2);
+			textBox1.AppendText(timesString2 + "\r\n");
 
-			//MatrixType funct3 = getMatrixFunctInDll(pointerDll, "getAvgValue");
-			//string timesString3 = getTimesStringMatrix(funct3);
-			//textBox1.AppendText(timesString1 + "\r\n");
+			MatrixType funct3 = getMatrixFunctInDll(pointerDll, "getAvgValue");
+			string timesString3 = getTimesStringMatrix(funct3);
+			textBox1.AppendText(timesString3 + "\r\n");
 
 			FreeLibrary(pointerDll);
 		}
@@ -104,7 +100,6 @@ namespace Starter___CSharp
 			}
 		}
 
-
 		double[] getRandomArray(int size)
 		{
 			double[] array = new double[size];
@@ -115,7 +110,6 @@ namespace Starter___CSharp
 			}
 			return array;
 		}
-
 
 		string getTimesStringVector(VectorType funct)
 		{
@@ -128,21 +122,13 @@ namespace Starter___CSharp
 			array1 = getRandomArray(size);
 			array2 = getRandomArray(size);
 
-			//IntPtr array1Ptr = Marshal.AllocCoTaskMem(sizeof(double) * array1.Length);
-			//Marshal.Copy(array1, 0, array1Ptr, array1.Length);
-
-			//IntPtr array2Ptr = Marshal.AllocCoTaskMem(sizeof(double) * array2.Length);
-			//Marshal.Copy(array2, 0, array2Ptr, array2.Length);
-
 			for (int i = 0; i < countIterations; i++)
 			{
-				
-				//QueryPerformanceFrequency(out Ffrequence);
-				//QueryPerformanceCounter(out FbeginCount);
-				funct(array1, array2, size);
-				//QueryPerformanceCounter(out FendCount);
-				//double time = (FendCount - FbeginCount) / (double)Ffrequence;
-				double time = 0;
+				QueryPerformanceFrequency(out Ffrequence);
+				QueryPerformanceCounter(out FbeginCount);
+				double value = funct(array1, array2, size);
+				QueryPerformanceCounter(out FendCount);
+				double time = (double)((FendCount - FbeginCount)) * 1000 / Ffrequence;
 				summTime += time;
 				if (minTime > time) minTime = time;
 				if (maxTime < time) maxTime = time;
@@ -152,40 +138,42 @@ namespace Starter___CSharp
 			return "Среднее, минимум, максимум\r\n" + avgTime.ToString() + " " + minTime.ToString() + " " + maxTime.ToString() + "\r\n";
 		}
 
-		//string getTimesStringMatrix(MatrixType funct)
-		//{
-		//	long FbeginCount, FendCount, Ffrequence;
-		//	double minTime = double.MaxValue;
-		//	double maxTime = double.MinValue;
-		//	double summTime = 0;
-		//	int countIterations = 10;
-		//	IntPtr[] array1;
-		//	unsafe
-		//	{
-		//		array1 = new IntPtr[size];
-		//		for (int k = 0; k < size; k++)
-		//		{
-		//			fixed (void* ptr = getRandomArray(size))
-		//			{
-		//				array1[k] = new IntPtr(ptr);
-		//			}
-		//		}
-		//	}
-		//	for (int i = 0; i < countIterations; i++)
-		//	{
-		//		//QueryPerformanceFrequency(out Ffrequence);
-		//		//QueryPerformanceCounter(out FbeginCount);
-		//		funct(array1, size, size);
-		//		//QueryPerformanceCounter(out FendCount);
-		//		double time = (FendCount - FbeginCount) / (double)Ffrequence;
+		string getTimesStringMatrix(MatrixType funct)
+		{
+			long FbeginCount, FendCount, Ffrequence;
+			double minTime = double.MaxValue;
+			double maxTime = double.MinValue;
+			double summTime = 0;
+			int countIterations = 10;
+			IntPtr[] array1;
+			int localSize = size / 10000;
+			unsafe
+			{
+				array1 = new IntPtr[localSize];
+				for (int k = 0; k < localSize; k++)
+				{
+					double[] arr = getRandomArray(localSize);
+					fixed (void* ptr = arr)
+					{
+						array1[k] = new IntPtr(ptr);
+					}
+				}
+			}
+			for (int i = 0; i < countIterations; i++)
+			{
+				QueryPerformanceFrequency(out Ffrequence);
+				QueryPerformanceCounter(out FbeginCount);
+				double value = funct(array1, localSize, localSize);
+				QueryPerformanceCounter(out FendCount);
 
-		//		summTime += time;
-		//		if (minTime > time) minTime = time;
-		//		if (maxTime < time) maxTime = time;
-		//	}
-		//	double avgTime = summTime / countIterations;
+				double time = (double)((FendCount - FbeginCount)) * 1000 / Ffrequence;
+				summTime += time;
+				if (minTime > time) minTime = time;
+				if (maxTime < time) maxTime = time;
+			}
+			double avgTime = summTime / countIterations;
 
-		//	return "Среднее, минимум, максимум\r\n" + avgTime.ToString() + " " + minTime.ToString() + " " + maxTime.ToString() + "\r\n";
-		//}
+			return "Среднее, минимум, максимум\r\n" + avgTime.ToString() + " " + minTime.ToString() + " " + maxTime.ToString() + "\r\n";
+		}
 	}
 }
