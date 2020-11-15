@@ -23,18 +23,21 @@
 #define DLLEXPORT extern "C" __declspec(dllexport)  __cdecl
 
 #ifdef _MSC_VER
-	#define  Found_Max _Found_Max
-	#define  Found_Min _Found_Min
-	#define  Found_Max_in_dual_mass _Found_Max_in_dual_mass
+	#define  getMinRangeOfVector _getMinRangeOfVector
+	#define  getStandardDeviation _getStandardDeviation
+	#define  getAvgValue _getAvgValue
+	#define  getMinValue _getMinValue
+	#define  getVolume _getVolume
+	#define  getDispersion _getDispersion
 #endif
 
 
-DLLEXPORT double __cdecl getMinRangeOfVector(double* array1, double* array2, int size);
-DLLEXPORT double __cdecl getStandardDeviation(double* array1, double* array2, int size);
-DLLEXPORT double __cdecl getAvgValue(double** array1, int size1, int size2);
-DLLEXPORT double __cdecl getMinValue(double* array1, double* array2, int size);
-DLLEXPORT double __cdecl getVolume(double* array1, double* array2, int size);
-DLLEXPORT double __cdecl getDispersion(double** array1, int size1, int size2);
+DLLEXPORT double getMinRangeOfVector(double* array1, double* array2, int size);
+DLLEXPORT double getStandardDeviation(double* array1, double* array2, int size);
+DLLEXPORT double getAvgValue(double** array1, int size1, int size2);
+DLLEXPORT double getMinValue(double* array1, double* array2, int size);
+DLLEXPORT double getVolume(double* array1, double* array2, int size);
+DLLEXPORT double getDispersion(double** array1, int size1, int size2);
 
 
 #pragma hdrstop
