@@ -26,86 +26,150 @@ type
   P2dArray = array of PDoubleArray;
   pdouble = ^Double;
 
-function Found_Max(mas_1, mas_2: PDoubleArray; size_1, size_2: integer)
+function getMinRangeOfVector(array1, array2: PDoubleArray; size: integer)
   : Double; cdecl;
 var
   i: integer;
-  max_value: Double;
+  minValue1, minValue2, maxValue1, maxValue2, range1, range2, range: Double;
 begin
-  max_value := mas_1[0];
-  for i := 0 to size_1 - 1 do
+  minValue1 := array1[0];
+	maxValue1 := array1[0];
+  for i := 1 to size - 1 do
   begin
-    if (max_value < mas_1[i]) then
+    if (minValue1 > array1[i]) then
     begin
-      max_value := mas_1[i];
+			minValue1 := array1[i];
+    end;
+		if (maxValue1 < array1[i]) then
+    begin
+			maxValue1 := array1[i];
     end;
   end;
 
-  for i := 0 to size_2 - 1 do
+  minValue2 := array2[0];
+	maxValue2 := array2[0];
+  for i := 1 to size - 1 do
   begin
-    if (max_value < mas_2[i]) then
+    if (minValue2 > array2[i]) then
     begin
-      max_value := mas_2[i];
+			minValue2 := array2[i];
+    end;
+		if (maxValue2 < array2[i]) then
+    begin
+			maxValue2 := array2[i];
     end;
   end;
 
-  result := max_value;
+  range1 := maxValue1 - minValue1;
+	range2 := maxValue2 - minValue2;
+  if (range1 < range2) then
+  begin
+    range := range1;
+  end
+  else
+  begin
+    range := range2;
+  end;
+  result := range;
 end;
 
 
-  function Found_Min(mas_1, mas_2: PDoubleArray; size_1, size_2: integer)
+function getStandardDeviation(array1, array2: PDoubleArray; size: integer)
   : Double; cdecl;
 var
   i: integer;
-  min_value: Double;
+  summ1: Double;
 begin
-  min_value := mas_1[0];
-  for i := 0 to size_1 - 1 do
+  summ1 := 0;
+  for i := 1 to size - 1 do
   begin
-    if (min_value > mas_1[i]) then
-    begin
-      min_value := mas_1[i];
-    end;
+    summ1 := summ1 + array1[i] * array1[i] - array2[i] * array2[i];
   end;
-
-  for i := 0 to size_2 - 1 do
-  begin
-    if (min_value > mas_2[i]) then
-    begin
-      min_value := mas_2[i];
-    end;
-  end;
-
-  result := min_value;
+  result := sqrt(summ1);
 end;
 
 
-function Found_Max_in_dual_mass(mas_1: P2dArray; size_1, size_2: integer)
+function getAvgValue(array1: T2dArray; size1, size2: integer)
   : Double; cdecl;
 var
   i, j: integer;
-  max_value: Double;
+  summ: Double;
 begin
-  max_value := mas_1[0][0];
-
-  for i := 0 to size_1 - 1 do
+  summ := 0;
+  for i := 1 to size1 - 1 do
   begin
-    for j := 0 to size_2-1 do
+    for j := 1 to size2 - 1 do
     begin
-      if (max_value < mas_1[i][j]) then
-      begin
-        max_value := mas_1[i][j];
-      end;
+      summ := summ + array1[i][j];
     end;
+  end;
+  result := summ / (size1 * size2);
+end;
 
+
+ function getMinValue(array1, array2: PDoubleArray; size: integer)
+  : Double; cdecl;
+var
+  i: integer;
+  minValue: Double;
+begin
+  minValue := array1[0];
+  for i := 1 to size - 1 do
+  begin
+    if (minValue > array1[i]) then
+    begin
+			minValue := array1[i];
+    end;
   end;
 
-  result := max_value;
+  for i := 1 to size - 1 do
+  begin
+    if (minValue > array2[i]) then
+    begin
+			minValue := array2[i];
+    end;
+  end;
+
+  result := minValue;
 end;
+
+
+function getVolume(array1, array2: PDoubleArray; size: integer)
+  : Double; cdecl;
+var
+  i: integer;
+  volume: Double;
+begin
+  volume := 1;
+  for i := 1 to size - 1 do
+  begin
+    volume := volume * abs(array1[i] - array2[i]);
+  end;
+  result := volume;
+end;
+
+
+function getDispersion(array1: T2dArray; size1, size2: integer)
+  : Double; cdecl;
+var
+  i, j: integer;
+  summ: Double;
+begin
+  summ := 0;
+  for i := 1 to size1 - 1 do
+  begin
+    for j := 1 to size2 - 1 do
+    begin
+      summ := summ + array1[i][j] * array1[i][j];
+    end;
+  end;
+  result := summ / (size1 * size2);
+end;
+
 
 { Эта функция экспортируется }
  exports
-   Found_Max,Found_Min,Found_Max_in_dual_mass;
+   getMinRangeOfVector,getStandardDeviation,getAvgValue, getMinValue, getVolume, getDispersion;
 
 begin
 

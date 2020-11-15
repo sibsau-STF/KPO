@@ -18,21 +18,26 @@
 //   explicitly add MEMMGR.LIB as this will be done implicitly for you
 
 #include <windows.h>
+#include <math.h>
 
 #define DLLEXPORT extern "C" __declspec(dllexport)  __cdecl
 
 #ifdef _MSC_VER
-	#define  Found_Max _Found_Max
-	#define  Found_Min _Found_Min
-	#define  Found_Max_in_dual_mass _Found_Max_in_dual_mass
+	#define  getMinRangeOfVector _getMinRangeOfVector
+	#define  getStandardDeviation _getStandardDeviation
+	#define  getAvgValue _getAvgValue
+	#define  getMinValue _getMinValue
+	#define  getVolume _getVolume
+	#define  getDispersion _getDispersion
 #endif
 
 
-DLLEXPORT double Found_Max(double *mas_1,double *mas_2,int N_1,int N_2);
-
-DLLEXPORT double Found_Min(double *mas_1, double *mas_2, int N_1, int N_2);
-
-DLLEXPORT double Found_Max_in_dual_mass(double **mas_1, int N_1, int N_2);
+DLLEXPORT double getMinRangeOfVector(double* array1, double* array2, int size);
+DLLEXPORT double getStandardDeviation(double* array1, double* array2, int size);
+DLLEXPORT double getAvgValue(double** array1, int size1, int size2);
+DLLEXPORT double getMinValue(double* array1, double* array2, int size);
+DLLEXPORT double getVolume(double* array1, double* array2, int size);
+DLLEXPORT double getDispersion(double** array1, int size1, int size2);
 
 
 #pragma hdrstop
@@ -44,76 +49,82 @@ extern "C" int _libmain(unsigned long reason)
 	return 1;
 }
 
-	//Находим максимальный элемент из двух массивов
-DLLEXPORT double Found_Max(double *mas_1, double *mas_2, int N_1, int N_2)
+DLLEXPORT double getMinRangeOfVector(double* array1, double* array2, int size)
 {
-	double value_max = mas_1[0];
-
-	for (int i = 0; i < N_1; i++)
+	double minValue1 = array1[0];
+	double maxValue1 = array1[0];
+	for (int i = 1; i < size; i++)
 	{
-		if (value_max<mas_1[i])
-		{
-			value_max = mas_1[i];
-		}
+		if (minValue1 > array1[i])
+			minValue1 = array1[i];
+		if (maxValue1 < array1[i])
+			maxValue1 = array1[i];
 	}
 
-	for (int i = 0; i < N_2; i++)
+	double minValue2 = array2[0];
+	double maxValue2 = array2[0];
+	for (int i = 1; i < size; i++)
 	{
-		if (value_max < mas_2[i])
-		{
-			value_max = mas_2[i];
-		}
+		if (minValue2 > array2[i])
+			minValue2 = array2[i];
+		if (maxValue2 < array2[i])
+			maxValue2 = array2[i];
 	}
+	double range1 = maxValue1 - minValue1;
+	double range2 = maxValue2 - minValue2;
 
-	return value_max;
+	return range1 < range2 ? range1 : range2;
+}
 
+DLLEXPORT double getStandardDeviation(double* array1, double* array2, int size)
+{
+	double summ1 = 0;
+	for (int i = 0; i < size; i++)
+		summ1 += array1[i] * array1[i] - array2[i] * array2[i];
+
+	return sqrt(summ1);
+}
+
+DLLEXPORT double getAvgValue(double** array1, int size1, int size2) {
+	double summ = 0;
+	for (int i = 0; i < size1; i++)
+		for (int j = 0; j < size2; j++)
+			summ += array1[i][j];
+	return summ / (size1 * size2);
 }
 
 
-//Находим максимальный элемент из двух массивов
-DLLEXPORT double Found_Min(double *mas_1, double *mas_2, int N_1, int N_2)
+
+DLLEXPORT double getMinValue(double* array1, double* array2, int size)
 {
-	double value_min = mas_1[0];
+	double minValue = array1[0];
+	for (int i = 1; i < size; i++)
+		if (minValue > array1[i])
+			minValue = array1[i];
 
-	for (int i = 0; i < N_1; i++)
-	{
-		if (value_min > mas_1[i])
-		{
-			value_min = mas_1[i];
-		}
-	}
+	for (int i = 1; i < size; i++)
+		if (minValue > array2[i])
+			minValue = array2[i];
 
-	for (int i = 0; i < N_2; i++)
-	{
-		if (value_min > mas_2[i])
-		{
-			value_min = mas_2[i];
-		}
-	}
-
-	return value_min;
-
+	return minValue;
 }
 
-
-//Находим максимальный элемент из двух массивов
-DLLEXPORT double Found_Max_in_dual_mass(double **mas_1, int N_1, int N_2)
+DLLEXPORT double getVolume(double* array1, double* array2, int size)
 {
-	double Max_value=mas_1[0][0];
+	double volume = 1;
+	for (int i = 0; i < size; i++)
+		volume *= abs(array1[i] - array2[i]);
+	return volume;
+}
 
-	for (int i = 0; i < N_1; i++)
-	{
-		for (int j = 0; j < N_2; j++)
+DLLEXPORT double getDispersion(double** array1, int size1, int size2) {
+	double summ = 0;
+	for (int i = 0; i < size1; i++)
+		for (int j = 0; j < size2; j++)
 		{
-			if (Max_value < mas_1[i][j])
-			{
-				Max_value = mas_1[i][j];
-			}
+			summ += array1[i][j] * array1[i][j];
 		}
-	}
-
-	return Max_value;
-
+	return sqrt(summ / (size1 * size2));
 }
 
 
