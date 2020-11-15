@@ -47,27 +47,35 @@ namespace Starter___CSharp
 
 		private void button1_Click(object sender, EventArgs e)
 		{
-			callDll("DLL - C.dll");
-			callDll("DLL - RAD C Builder.dll");
-			callDll("DLL - RAD C Delphi.dll");
+			callDll("DLL - C.dll", "getMinRangeOfVector", "getStandardDeviation", "getAvgValue");
+		}
+
+		private void button2_Click(object sender, EventArgs e)
+		{
+			callDll("DLL - RAD C Builder.dll", "_getMinRangeOfVector", "_getStandardDeviation", "_getAvgValue");
+		}
+
+		private void button3_Click(object sender, EventArgs e)
+		{
+			callDll("DLL - RAD Delphi.dll", "getMinRangeOfVector", "getStandardDeviation", "getAvgValue");
 		}
 
 		//int size = 10000000;
 		int size = 10000;
 
-		void callDll(string dllPath)
+		void callDll(string dllPath, string functname1, string functname2, string functname3)
 		{
 			int pointerDll = LoadLibrary(dllPath);
 
-			VectorType funct1 = getVectorFunctInDll(pointerDll, "getMinRangeOfVector");
+			VectorType funct1 = getVectorFunctInDll(pointerDll, functname1);
 			string timesString1 = getTimesStringVector(funct1);
-			textBox1.AppendText(timesString1 + "\r\n");
+			textBox1.AppendText(timesString1 );
 
-			VectorType funct2 = getVectorFunctInDll(pointerDll, "getStandardDeviation");
+			VectorType funct2 = getVectorFunctInDll(pointerDll, functname2);
 			string timesString2 = getTimesStringVector(funct2);
-			textBox1.AppendText(timesString2 + "\r\n");
+			textBox1.AppendText(timesString2);
 
-			MatrixType funct3 = getMatrixFunctInDll(pointerDll, "getAvgValue");
+			MatrixType funct3 = getMatrixFunctInDll(pointerDll, functname3);
 			string timesString3 = getTimesStringMatrix(funct3);
 			textBox1.AppendText(timesString3 + "\r\n");
 
@@ -135,7 +143,7 @@ namespace Starter___CSharp
 			}
 			double avgTime = summTime / countIterations;
 
-			return "Среднее, минимум, максимум\r\n" + avgTime.ToString() + " " + minTime.ToString() + " " + maxTime.ToString() + "\r\n";
+			return avgTime.ToString() + "\r\t" + minTime.ToString() + "\r\t" + maxTime.ToString() + "\r\t";
 		}
 
 		string getTimesStringMatrix(MatrixType funct)
@@ -173,7 +181,7 @@ namespace Starter___CSharp
 			}
 			double avgTime = summTime / countIterations;
 
-			return "Среднее, минимум, максимум\r\n" + avgTime.ToString() + " " + minTime.ToString() + " " + maxTime.ToString() + "\r\n";
+			return avgTime.ToString() + "\r\t" + minTime.ToString() + "\r\t" + maxTime.ToString() + "\r\t";
 		}
 	}
 }

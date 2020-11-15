@@ -10,17 +10,16 @@ using namespace std;
 typedef double(__cdecl  *VectorType)(double*, double*, int);
 typedef double(__cdecl  *MatrixType)(double**, int, int);
 
-void callDll(CONST WCHAR* dllname) {
+void callDll(CONST WCHAR* dllname, const char* functname1, const char* functname2, const char* functname3) {
 	HINSTANCE hinstLib = LoadLibrary(dllname);
 	if (hinstLib == NULL)
 	{
 		cout << "ERROR: unable to load DLL:" << dllname << endl;
 		return;
 	}
-	cout << "DLL: " << dllname << endl;
-	VectorType funct1 = (VectorType)GetProcAddress(hinstLib, "getMinRangeOfVector");
-	VectorType funct2 = (VectorType)GetProcAddress(hinstLib, "getStandardDeviation");
-	MatrixType funct3 = (MatrixType)GetProcAddress(hinstLib, "getAvgValue");
+	VectorType funct1 = (VectorType)GetProcAddress(hinstLib, functname1);
+	VectorType funct2 = (VectorType)GetProcAddress(hinstLib, functname2);
+	MatrixType funct3 = (MatrixType)GetProcAddress(hinstLib, functname3);
 
 	LARGE_INTEGER FbeginCount, FendCount, Ffrequence;
 
@@ -55,7 +54,7 @@ void callDll(CONST WCHAR* dllname) {
 		if (maxTime < time) maxTime = time;
 	}
 	avgTime = summTime / countIterations;
-	cout << "Среднее, минимум, максимум"<< endl << avgTime << " " << minTime << " " << maxTime << endl;
+	cout << avgTime << "\t" << minTime << "\t" << maxTime << "\t";
 
 	minTime = DBL_MAX;
 	maxTime = -DBL_MAX;
@@ -72,7 +71,7 @@ void callDll(CONST WCHAR* dllname) {
 		if (maxTime < time) maxTime = time;
 	}
 	avgTime = summTime / countIterations;
-	cout << "Среднее, минимум, максимум" << endl << avgTime << " " << minTime << " " << maxTime << endl;
+	cout << avgTime << "\t" << minTime << "\t" << maxTime << "\t";
 
 	double** array3 = new double*[N];
 	for (int i = 0; i < N2; i++)
@@ -98,14 +97,14 @@ void callDll(CONST WCHAR* dllname) {
 		if (maxTime < time) maxTime = time;
 	}
 	avgTime = summTime / countIterations;
-	cout << "Среднее, минимум, максимум" << endl << avgTime << " " << minTime << " " << maxTime << endl;
+	cout << avgTime << "\t" << minTime << "\t" << maxTime << "\t" << endl;
 }
 
 int main()
 {
 	setlocale(0, "");
 	srand(time(0));
-	callDll(TEXT("DLL - C.dll"));
-	callDll(TEXT("DLL - RAD C Builder.dll"));
-	callDll(TEXT("DLL - RAD C Delphi.dll"));
+	callDll(TEXT("DLL - C.dll"), "getMinRangeOfVector", "getStandardDeviation", "getAvgValue");
+	callDll(TEXT("DLL - RAD C Builder.dll"), "_getMinRangeOfVector", "_getStandardDeviation", "_getAvgValue");
+	callDll(TEXT("DLL - RAD Delphi.dll"), "getMinRangeOfVector", "getStandardDeviation", "getAvgValue");
 }
