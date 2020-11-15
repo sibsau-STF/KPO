@@ -11,15 +11,15 @@ TForm1 *Form1;
 //---------------------------------------------------------------------------
 
 
-void callDll(CONST WCHAR* dllname) {
+void callDll(CONST WCHAR* dllname, const char* functname1, const char* functname2, const char* functname3) {
 	HINSTANCE hinstLib = LoadLibrary(dllname);
 	if (hinstLib == NULL)
 	{
 		return;
 	}
-	VectorType funct1 = (VectorType)GetProcAddress(hinstLib, "getMinRangeOfVector");
-	VectorType funct2 = (VectorType)GetProcAddress(hinstLib, "getStandardDeviation");
-	MatrixType funct3 = (MatrixType)GetProcAddress(hinstLib, "getAvgValue");
+	VectorType funct1 = (VectorType)GetProcAddress(hinstLib, functname1);
+	VectorType funct2 = (VectorType)GetProcAddress(hinstLib, functname2);
+	MatrixType funct3 = (MatrixType)GetProcAddress(hinstLib, functname3);
 
 	LARGE_INTEGER FbeginCount, FendCount, Ffrequence;
 
@@ -117,19 +117,19 @@ Memo1->Lines->Text='fghfghfhg';
 
 void __fastcall TForm1::Button_VS_CClick(TObject *Sender)
 {
-	callDll(TEXT("DLL - C.dll"));
+	callDll(TEXT("DLL - C.dll"), "getMinRangeOfVector", "getStandardDeviation", "getAvgValue");
 }
 //---------------------------------------------------------------------------
 
 void __fastcall TForm1::Button_RAD_CClick(TObject *Sender)
 {
-	callDll(TEXT("DLL - RAD C Builder.dll"));
+	callDll(TEXT("DLL - RAD C Builder.dll"), "_getMinRangeOfVector", "_getStandardDeviation", "_getAvgValue");
 }
 //---------------------------------------------------------------------------
 
 void __fastcall TForm1::Button_RAD_DelphiClick(TObject *Sender)
 {
-	callDll(TEXT("DLL - RAD C Delphi.dll"));
+	callDll(TEXT("DLL - RAD Delphi.dll"), "getMinRangeOfVector", "getStandardDeviation", "getAvgValue");
 }
 //---------------------------------------------------------------------------
 

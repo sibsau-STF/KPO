@@ -23,29 +23,29 @@ object Form1: TForm1
     TabOrder = 0
   end
   object Button_VS_C: TButton
-    Left = 32
-    Top = 24
+    Left = 8
+    Top = 8
     Width = 99
     Height = 50
-    Caption = 'VS_C++'
+    Caption = 'DLL C'
     TabOrder = 1
     OnClick = Button_VS_CClick
   end
   object Button_RAD_C: TButton
-    Left = 200
-    Top = 24
+    Left = 184
+    Top = 8
     Width = 91
     Height = 50
-    Caption = 'RAD_C++'
+    Caption = 'RAD C Builder'
     TabOrder = 2
     OnClick = Button_RAD_CClick
   end
   object Button_RAD_Delphi: TButton
     Left = 344
-    Top = 24
+    Top = 8
     Width = 113
     Height = 50
-    Caption = 'RAD_Delphi'
+    Caption = 'RAD Delphi'
     TabOrder = 3
     OnClick = Button_RAD_DelphiClick
   end
