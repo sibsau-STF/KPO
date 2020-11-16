@@ -1,4 +1,4 @@
-unit Unit1;
+п»їunit Unit1;
 
 interface
 
@@ -43,117 +43,460 @@ implementation
 {$R *.dfm}
 
 
-function callDll(dllname, functName1, functName2, functName3: String): String;
-var
-funct1, funct2: VectorType;
-funct3: MatrixType;
-N, N2, countIterations, i, j, count: integer;
-arr1, arr2: array of double;
-array1, array2: PDoubleArray;
-array3: T2dArray;
-minTime, maxTime, summTime, avgTime, time: double;
-FbeginCount, FendCount, Ffrequence: TlargeInteger;
-res: String;
-begin
-
-  //размерность массива
-	N := 10000;
-	//размерность двухмерного массива
-	N2 := 100;
-	//Кол-во замеров
-	countIterations := 10;
-
-  if hLib = 0 then
-    hLib := SafeLoadLibrary(dllname);
-  SetLength(arr1, N);
-  SetLength(arr2, N);
-  SetLength(array3, N2, N2);
-  funct1 := GetProcAddress(hLib, PChar(functName1));
-	funct2 := GetProcAddress(hLib, PChar(functName2));
-	funct3 := GetProcAddress(hLib, PChar(functName3));
-  res := '';
-
-	for i := 0 to N - 1 do
-	begin
-		arr1[i] := Random;
-		arr2[i] := Random;
-	end;
-
-  array1 := @arr1[0];
-  array2 := @arr2[0];
-
-  minTime := 100000;
-	maxTime := 0;
-	summTime := 0;
-	for count := 0 to count - 1 do
-	begin
-		QueryPerformanceFrequency(Ffrequence);
-		QueryPerformanceCounter(FbeginCount);
-		funct1(array1, array2, N);
-		QueryPerformanceCounter(FendCount);
-		time := ((FendCount - FbeginCount) / Ffrequence) * 1000;
-		summTime :=  summTime + time;
-		if minTime > time then minTime := time;
-		if maxTime < time then maxTime := time;
-	end;
-	avgTime := summTime / countIterations;
-	res := res + FloatToStr(avgTime) + '\t' + FloatToStr(minTime) + '\t' + FloatToStr(maxTime) + '\t';
-
-  minTime := 100000;
-	maxTime := 0;
-	summTime := 0;
-	for count := 0 to count - 1 do
-	begin
-		QueryPerformanceFrequency(Ffrequence);
-		QueryPerformanceCounter(FbeginCount);
-		funct2(array1, array2, N);
-		QueryPerformanceCounter(FendCount);
-		time := ((FendCount - FbeginCount) / Ffrequence) * 1000;
-		summTime :=  summTime + time;
-		if minTime > time then minTime := time;
-		if maxTime < time then maxTime := time;
-	end;
-	avgTime := summTime / countIterations;
-	res := res + FloatToStr(avgTime) + '\t' + FloatToStr(minTime) + '\t' + FloatToStr(maxTime) + '\t';
-
-  for i := 0 to N2 - 1 do
-    for j := 0 to N2 - 1 do
-      begin
-        array3[i][j] := Random(1000);
-      end;
-
-  minTime := 100000;
-	maxTime := 0;
-	summTime := 0;
-	for count := 0 to count - 1 do
-	begin
-		QueryPerformanceFrequency(Ffrequence);
-		QueryPerformanceCounter(FbeginCount);
-		funct3(array3, N, N);
-		QueryPerformanceCounter(FendCount);
-		time := ((FendCount - FbeginCount) / Ffrequence) * 1000;
-		summTime :=  summTime + time;
-		if minTime > time then minTime := time;
-		if maxTime < time then maxTime := time;
-	end;
-	avgTime := summTime / countIterations;
-	res := res + FloatToStr(avgTime) + '\t' + FloatToStr(minTime) + '\t' + FloatToStr(maxTime) + '\t';
-  result := res;
-end;
 
 procedure TForm1.Button_RAD_CClick(Sender: TObject);
+//begin
+//  Memo1.Lines.Add(callDll('DLL - RAD C Builder.dll','_getMinRangeOfVector','_getStandardDeviation','_getAvgValue') + '\n');
+//end;
+var
+  arr1, arr2, mas_time: array of double;
+  mas_3: T2dArray;
+  pmas_1, pmas_2: PDoubleArray;
+  found_max: VectorType;
+  found_min: VectorType;
+  max_dual_mas: Matrixtype;
+  size_1, size_2, size_zamer: integer;
+  result, count_time, min_time, max_time: double;
+  i, j: integer;
+  FbeginCount, FendCount, Ffrequence: TlargeInteger;
+  Ftime: extended;
+  res1, res2, res3: String;
+
 begin
-  Memo1.Lines.Add(callDll('DLL - RAD C Builder.dll','_getMinRangeOfVector','_getStandardDeviation','_getAvgValue') + '\n');
+  size_1 := 10000;
+  size_2 := 100;
+  size_zamer := 50;
+  count_time:=0;
+  hLib := 0;
+  if hLib = 0 then
+    hLib := SafeLoadLibrary('DLL - RAD C Builder.dll');
+
+  Memo1.Lines.Clear;
+  Memo1.Lines.Add('DLL - RAD C Builder');
+  found_max := GetProcAddress(hLib, PChar('_getMinRangeOfVector'));
+  found_min := GetProcAddress(hLib, PChar('_getStandardDeviation'));
+  max_dual_mas := GetProcAddress(hLib, PChar('_getAvgValue'));
+
+  Memo1.Lines.Add('Test Start');
+  if (@found_max = nil) OR (@found_min = nil) OR (@max_dual_mas = nil) then
+    Memo1.Lines.Add('function load error');
+
+  SetLength(arr1, size_1);
+  SetLength(arr2, size_1);
+  SetLength(mas_time, size_zamer);
+
+  for i := 0 to size_1 - 1 do
+  begin
+    arr1[i] := Random(1000);
+    arr2[i] := Random(1000);
+  end;
+
+  SetLength(mas_3, size_2, size_2);
+
+  for j := 0 to size_2 - 1 do
+  begin
+  for i := 0 to size_2 - 1 do
+  begin
+  mas_3[j][i] := Random(1000);
+  end;
+  end;
+
+  pmas_1 := @arr1[0];
+  pmas_2 := @arr2[0];
+
+  for i := 0 to size_zamer - 1 do
+  begin
+    QueryPerformanceFrequency(Ffrequence);
+    QueryPerformanceCounter(FbeginCount);
+    result := found_max(pmas_1, pmas_2, size_1);
+    QueryPerformanceCounter(FendCount);
+    Ftime := ((FendCount - FbeginCount) / Ffrequence) * 1000;
+
+    count_time := count_time + Ftime;
+    mas_time[i] := Ftime;
+  end;
+
+  max_time := mas_time[0];
+  min_time := mas_time[0];
+
+  for i := 0 to size_zamer - 1 do
+  begin
+    if (mas_time[i] > max_time) then
+      max_time := mas_time[i];
+
+    if (mas_time[i] < min_time) then
+      min_time := mas_time[i];
+
+  end;
+
+  count_time:=count_time/size_zamer;
+  res1:=floattostr(min_time) + #$9 + floattostr(max_time) + #$9 + floattostr(count_time);
+
+  count_time:=0;
+
+   for i := 0 to size_zamer - 1 do
+  begin
+    QueryPerformanceFrequency(Ffrequence);
+    QueryPerformanceCounter(FbeginCount);
+    result := found_min(pmas_1, pmas_2, size_1);
+    QueryPerformanceCounter(FendCount);
+    Ftime := ((FendCount - FbeginCount) / Ffrequence) * 1000;
+
+    count_time := count_time + Ftime;
+    mas_time[i] := Ftime;
+  end;
+
+  max_time := mas_time[0];
+  min_time := mas_time[0];
+
+  for i := 0 to size_zamer - 1 do
+  begin
+    if (mas_time[i] > max_time) then
+      max_time := mas_time[i];
+
+    if (mas_time[i] < min_time) then
+      min_time := mas_time[i];
+
+  end;
+
+  count_time:=count_time/size_zamer;
+  res2:=floattostr(min_time) + #$9 + floattostr(max_time) + #$9 + floattostr(count_time);
+  count_time:=0;
+
+   for i := 0 to size_zamer - 1 do
+  begin
+    QueryPerformanceFrequency(Ffrequence);
+    QueryPerformanceCounter(FbeginCount);
+
+    result := max_dual_mas(mas_3, size_2, size_2);
+    QueryPerformanceCounter(FendCount);
+    Ftime := ((FendCount - FbeginCount) / Ffrequence) * 1000;
+
+    count_time := count_time + Ftime;
+    mas_time[i] := Ftime;
+  end;
+
+  max_time := mas_time[0];
+  min_time := mas_time[0];
+
+  for i := 0 to size_zamer - 1 do
+  begin
+    if (mas_time[i] > max_time) then
+      max_time := mas_time[i];
+
+    if (mas_time[i] < min_time) then
+      min_time := mas_time[i];
+
+  end;
+
+  count_time:=count_time/size_zamer;
+  res3:=floattostr(min_time) + #$9 + floattostr(max_time) + #$9 + floattostr(count_time);
+
+  Memo1.Lines.Add(res1 + #$9 + res2 + #$9  + res3);
 end;
+
 
 procedure TForm1.Button_RAD_DelphiClick(Sender: TObject);
+//begin
+//  Memo1.Lines.Add(callDll('DLL - RAD Delphi.dll','getMinRangeOfVector','getStandardDeviation','getAvgValue') + '\n');
+//end;
+var
+  arr1, arr2, mas_time: array of double;
+  mas_3: T2dArray;
+  pmas_1, pmas_2: PDoubleArray;
+  found_max: VectorType;
+  found_min: VectorType;
+  max_dual_mas: Matrixtype;
+  size_1, size_2, size_zamer: integer;
+  result, count_time, min_time, max_time: double;
+  i, j: integer;
+  FbeginCount, FendCount, Ffrequence: TlargeInteger;
+  Ftime: extended;
+  res1, res2, res3: String;
+
 begin
-  Memo1.Lines.Add(callDll('DLL - RAD Delphi.dll','getMinRangeOfVector','getStandardDeviation','getAvgValue') + '\n');
+  size_1 := 10000;
+  size_2 := 100;
+  size_zamer := 50;
+  count_time:=0;
+  hLib := 0;
+  if hLib = 0 then
+    hLib := SafeLoadLibrary('DLL - RAD Delphi.dll');
+
+  Memo1.Lines.Clear;
+  Memo1.Lines.Add('DLL - RAD Delphi.dll');
+  found_max := GetProcAddress(hLib, PChar('getMinRangeOfVector'));
+  found_min := GetProcAddress(hLib, PChar('getStandardDeviation'));
+  max_dual_mas := GetProcAddress(hLib, PChar('getAvgValue'));
+
+  Memo1.Lines.Add('Test Start');
+  if (@found_max = nil) OR (@found_min = nil) OR (@max_dual_mas = nil) then
+    Memo1.Lines.Add('function load error');
+
+  SetLength(arr1, size_1);
+  SetLength(arr2, size_1);
+  SetLength(mas_time, size_zamer);
+
+  for i := 0 to size_1 - 1 do
+  begin
+    arr1[i] := Random(1000);
+    arr2[i] := Random(1000);
+  end;
+
+  SetLength(mas_3, size_2, size_2);
+
+  for j := 0 to size_2 - 1 do
+  begin
+  for i := 0 to size_2 - 1 do
+  begin
+  mas_3[j][i] := Random(1000);
+  end;
+  end;
+
+  pmas_1 := @arr1[0];
+  pmas_2 := @arr2[0];
+
+  for i := 0 to size_zamer - 1 do
+  begin
+    QueryPerformanceFrequency(Ffrequence);
+    QueryPerformanceCounter(FbeginCount);
+    result := found_max(pmas_1, pmas_2, size_1);
+    QueryPerformanceCounter(FendCount);
+    Ftime := ((FendCount - FbeginCount) / Ffrequence) * 1000;
+
+    count_time := count_time + Ftime;
+    mas_time[i] := Ftime;
+  end;
+
+  max_time := mas_time[0];
+  min_time := mas_time[0];
+
+  for i := 0 to size_zamer - 1 do
+  begin
+    if (mas_time[i] > max_time) then
+      max_time := mas_time[i];
+
+    if (mas_time[i] < min_time) then
+      min_time := mas_time[i];
+
+  end;
+
+  count_time:=count_time/size_zamer;
+  res1:=floattostr(min_time) + #$9 + floattostr(max_time) + #$9 + floattostr(count_time);
+
+  count_time:=0;
+
+   for i := 0 to size_zamer - 1 do
+  begin
+    QueryPerformanceFrequency(Ffrequence);
+    QueryPerformanceCounter(FbeginCount);
+    result := found_min(pmas_1, pmas_2, size_1);
+    QueryPerformanceCounter(FendCount);
+    Ftime := ((FendCount - FbeginCount) / Ffrequence) * 1000;
+
+    count_time := count_time + Ftime;
+    mas_time[i] := Ftime;
+  end;
+
+  max_time := mas_time[0];
+  min_time := mas_time[0];
+
+  for i := 0 to size_zamer - 1 do
+  begin
+    if (mas_time[i] > max_time) then
+      max_time := mas_time[i];
+
+    if (mas_time[i] < min_time) then
+      min_time := mas_time[i];
+
+  end;
+
+  count_time:=count_time/size_zamer;
+  res2:=floattostr(min_time) + #$9 + floattostr(max_time) + #$9 + floattostr(count_time);
+  count_time:=0;
+
+   for i := 0 to size_zamer - 1 do
+  begin
+    QueryPerformanceFrequency(Ffrequence);
+    QueryPerformanceCounter(FbeginCount);
+
+    result := max_dual_mas(mas_3, size_2, size_2);
+    QueryPerformanceCounter(FendCount);
+    Ftime := ((FendCount - FbeginCount) / Ffrequence) * 1000;
+
+    count_time := count_time + Ftime;
+    mas_time[i] := Ftime;
+  end;
+
+  max_time := mas_time[0];
+  min_time := mas_time[0];
+
+  for i := 0 to size_zamer - 1 do
+  begin
+    if (mas_time[i] > max_time) then
+      max_time := mas_time[i];
+
+    if (mas_time[i] < min_time) then
+      min_time := mas_time[i];
+
+  end;
+
+  count_time:=count_time/size_zamer;
+  res3:=floattostr(min_time) + #$9 + floattostr(max_time) + #$9 + floattostr(count_time);
+
+  Memo1.Lines.Add(res1 + #$9 + res2 + #$9  + res3);
 end;
+
+
 
 procedure TForm1.Button_VS_CClick(Sender: TObject);
-begin
-  Memo1.Lines.Add(callDll('DLL - C.dll','getMinRangeOfVector','getStandardDeviation','getAvgValue') + '\n');
-end;
+//begin
+//  Memo1.Lines.Add(callDll('DLL - C.dll','getMinRangeOfVector','getStandardDeviation','getAvgValue') + '\n');
+//end;
+var
+  arr1, arr2, mas_time: array of double;
+  mas_3: T2dArray;
+  pmas_1, pmas_2: PDoubleArray;
+  found_max: VectorType;
+  found_min: VectorType;
+  max_dual_mas: Matrixtype;
+  size_1, size_2, size_zamer: integer;
+  result, count_time, min_time, max_time: double;
+  i, j: integer;
+  FbeginCount, FendCount, Ffrequence: TlargeInteger;
+  Ftime: extended;
+  res1, res2, res3: String;
 
+begin
+  size_1 := 10000;
+  size_2 := 100;
+  size_zamer := 50;
+  count_time:=0;
+  hLib := 0;
+  if hLib = 0 then
+    hLib := SafeLoadLibrary('DLL - C.dll');
+
+  Memo1.Lines.Clear;
+  Memo1.Lines.Add('DLL - C.dll');
+  found_max := GetProcAddress(hLib, PChar('getMinRangeOfVector'));
+  found_min := GetProcAddress(hLib, PChar('getStandardDeviation'));
+  max_dual_mas := GetProcAddress(hLib, PChar('getAvgValue'));
+
+  Memo1.Lines.Add('Test Start');
+  if (@found_max = nil) OR (@found_min = nil) OR (@max_dual_mas = nil) then
+    Memo1.Lines.Add('function load error');
+
+  SetLength(arr1, size_1);
+  SetLength(arr2, size_1);
+  SetLength(mas_time, size_zamer);
+
+  for i := 0 to size_1 - 1 do
+  begin
+    arr1[i] := Random(1000);
+    arr2[i] := Random(1000);
+  end;
+
+  SetLength(mas_3, size_2, size_2);
+
+  for j := 0 to size_2 - 1 do
+  begin
+  for i := 0 to size_2 - 1 do
+  begin
+  mas_3[j][i] := Random(1000);
+  end;
+  end;
+
+  pmas_1 := @arr1[0];
+  pmas_2 := @arr2[0];
+
+  for i := 0 to size_zamer - 1 do
+  begin
+    QueryPerformanceFrequency(Ffrequence);
+    QueryPerformanceCounter(FbeginCount);
+    result := found_max(pmas_1, pmas_2, size_1);
+    QueryPerformanceCounter(FendCount);
+    Ftime := ((FendCount - FbeginCount) / Ffrequence) * 1000;
+
+    count_time := count_time + Ftime;
+    mas_time[i] := Ftime;
+  end;
+
+  max_time := mas_time[0];
+  min_time := mas_time[0];
+
+  for i := 0 to size_zamer - 1 do
+  begin
+    if (mas_time[i] > max_time) then
+      max_time := mas_time[i];
+
+    if (mas_time[i] < min_time) then
+      min_time := mas_time[i];
+
+  end;
+
+  count_time:=count_time/size_zamer;
+  res1:=floattostr(min_time) + #$9 + floattostr(max_time) + #$9 + floattostr(count_time);
+
+  count_time:=0;
+
+   for i := 0 to size_zamer - 1 do
+  begin
+    QueryPerformanceFrequency(Ffrequence);
+    QueryPerformanceCounter(FbeginCount);
+    result := found_min(pmas_1, pmas_2, size_1);
+    QueryPerformanceCounter(FendCount);
+    Ftime := ((FendCount - FbeginCount) / Ffrequence) * 1000;
+
+    count_time := count_time + Ftime;
+    mas_time[i] := Ftime;
+  end;
+
+  max_time := mas_time[0];
+  min_time := mas_time[0];
+
+  for i := 0 to size_zamer - 1 do
+  begin
+    if (mas_time[i] > max_time) then
+      max_time := mas_time[i];
+
+    if (mas_time[i] < min_time) then
+      min_time := mas_time[i];
+
+  end;
+
+  count_time:=count_time/size_zamer;
+  res2:=floattostr(min_time) + #$9 + floattostr(max_time) + #$9 + floattostr(count_time);
+  count_time:=0;
+
+   for i := 0 to size_zamer - 1 do
+  begin
+    QueryPerformanceFrequency(Ffrequence);
+    QueryPerformanceCounter(FbeginCount);
+
+    result := max_dual_mas(mas_3, size_2, size_2);
+    QueryPerformanceCounter(FendCount);
+    Ftime := ((FendCount - FbeginCount) / Ffrequence) * 1000;
+
+    count_time := count_time + Ftime;
+    mas_time[i] := Ftime;
+  end;
+
+  max_time := mas_time[0];
+  min_time := mas_time[0];
+
+  for i := 0 to size_zamer - 1 do
+  begin
+    if (mas_time[i] > max_time) then
+      max_time := mas_time[i];
+
+    if (mas_time[i] < min_time) then
+      min_time := mas_time[i];
+
+  end;
+
+  count_time:=count_time/size_zamer;
+  res3:=floattostr(min_time) + #$9 + floattostr(max_time) + #$9 + floattostr(count_time);
+
+  Memo1.Lines.Add(res1 + #$9 + res2 + #$9  + res3);
+end;
 end.
