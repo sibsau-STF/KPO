@@ -7,7 +7,7 @@
 
 using namespace std;
 
-DLLEXPORT double getMinRangeOfVector(double* array1, double* array2, int size)
+DLLEXPORT double getMinRangeOfVector(far double* array1, far double* array2, int size)
 {
 	double minValue1 = array1[0];
 	double maxValue1 = array1[0];
@@ -34,7 +34,7 @@ DLLEXPORT double getMinRangeOfVector(double* array1, double* array2, int size)
 	return range1 < range2 ? range1 : range2;
 }
 
-DLLEXPORT double getStandardDeviation(double* array1, double* array2, int size)
+DLLEXPORT double getStandardDeviation(far double* array1, far double* array2, int size)
 {
 	double summ1 = 0;
 	for (int i = 0; i < size; i++)
@@ -43,7 +43,7 @@ DLLEXPORT double getStandardDeviation(double* array1, double* array2, int size)
 	return sqrt(summ1);
 }
 
-DLLEXPORT double getAvgValue(double** array1, int size1, int size2) {
+DLLEXPORT double getAvgValue(far double** array1, int size1, int size2) {
 	double summ = 0;
 	for (int i = 0; i < size1; i++)
 		for (int j = 0; j < size2; j++)
@@ -53,7 +53,7 @@ DLLEXPORT double getAvgValue(double** array1, int size1, int size2) {
 
 
 
-DLLEXPORT double getMinValue(double* array1, double* array2, int size)
+DLLEXPORT double getMinValue(far double* array1, far double* array2, int size)
 {
 	double minValue = array1[0];
 	for (int i = 1; i < size; i++)
@@ -67,7 +67,7 @@ DLLEXPORT double getMinValue(double* array1, double* array2, int size)
 	return minValue;
 }
 
-DLLEXPORT double getVolume(double* array1, double* array2, int size)
+DLLEXPORT double getVolume(far double* array1, far double* array2, int size)
 {
 	double volume = 1;
 	for (int i = 0; i < size; i++)
@@ -75,7 +75,7 @@ DLLEXPORT double getVolume(double* array1, double* array2, int size)
 	return volume;
 }
 
-DLLEXPORT double getDispersion(double** array1, int size1, int size2) {
+DLLEXPORT double getDispersion(far double** array1, int size1, int size2) {
 	double summ = 0;
 	for (int i = 0; i < size1; i++)
 		for (int j = 0; j < size2; j++)

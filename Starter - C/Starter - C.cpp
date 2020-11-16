@@ -42,7 +42,7 @@ void callDll(CONST WCHAR* dllname, const char* functname1, const char* functname
 	minTime = DBL_MAX;
 	maxTime = -DBL_MAX;
 	summTime = 0;
-	for (int count = 0; count < N; count++)
+	for (int count = 0; count < countIterations; count++)
 	{
 		QueryPerformanceFrequency(&Ffrequence);
 		QueryPerformanceCounter(&FbeginCount);
@@ -59,7 +59,7 @@ void callDll(CONST WCHAR* dllname, const char* functname1, const char* functname
 	minTime = DBL_MAX;
 	maxTime = -DBL_MAX;
 	summTime = 0;
-	for (int count = 0; count < N; count++)
+	for (int count = 0; count < countIterations; count++)
 	{
 		QueryPerformanceFrequency(&Ffrequence);
 		QueryPerformanceCounter(&FbeginCount);
@@ -85,7 +85,7 @@ void callDll(CONST WCHAR* dllname, const char* functname1, const char* functname
 	minTime = DBL_MAX;
 	maxTime = -DBL_MAX;
 	summTime = 0;
-	for (int count = 0; count < N; count++)
+	for (int count = 0; count < countIterations; count++)
 	{
 		QueryPerformanceFrequency(&Ffrequence);
 		QueryPerformanceCounter(&FbeginCount);
