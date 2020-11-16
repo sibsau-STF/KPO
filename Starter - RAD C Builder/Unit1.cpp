@@ -42,13 +42,13 @@ void callDll(CONST WCHAR* dllname, const char* functname1, const char* functname
 	minTime = DBL_MAX;
 	maxTime = -DBL_MAX;
 	summTime = 0;
-	for (int count = 0; count < N; count++)
+	for (int count = 0; count < countIterations; count++)
 	{
 		QueryPerformanceFrequency(&Ffrequence);
 		QueryPerformanceCounter(&FbeginCount);
 		funct1(array1, array2, N);
 		QueryPerformanceCounter(&FendCount);
-		double time = (double)((FendCount.QuadPart - FbeginCount.QuadPart)) * 1000 / Ffrequence.QuadPart;
+		double time = (double)(((FendCount.QuadPart - FbeginCount.QuadPart)) * 1000) / Ffrequence.QuadPart;
 		summTime += time;
 		if (minTime > time) minTime = time;
 		if (maxTime < time) maxTime = time;
@@ -59,13 +59,13 @@ void callDll(CONST WCHAR* dllname, const char* functname1, const char* functname
 	minTime = DBL_MAX;
 	maxTime = -DBL_MAX;
 	summTime = 0;
-	for (int count = 0; count < N; count++)
+	for (int count = 0; count < countIterations; count++)
 	{
 		QueryPerformanceFrequency(&Ffrequence);
 		QueryPerformanceCounter(&FbeginCount);
 		funct2(array1, array2, N);
 		QueryPerformanceCounter(&FendCount);
-		double time = (double)((FendCount.QuadPart - FbeginCount.QuadPart)) * 1000 / Ffrequence.QuadPart;
+		double time = (double)(((FendCount.QuadPart - FbeginCount.QuadPart)) * 1000) / Ffrequence.QuadPart;
 		summTime += time;
 		if (minTime > time) minTime = time;
 		if (maxTime < time) maxTime = time;
@@ -85,13 +85,13 @@ void callDll(CONST WCHAR* dllname, const char* functname1, const char* functname
 	minTime = DBL_MAX;
 	maxTime = -DBL_MAX;
 	summTime = 0;
-	for (int count = 0; count < N; count++)
+	for (int count = 0; count < countIterations; count++)
 	{
 		QueryPerformanceFrequency(&Ffrequence);
 		QueryPerformanceCounter(&FbeginCount);
 		funct3(array3, N2, N2);
 		QueryPerformanceCounter(&FendCount);
-		double time = (double)((FendCount.QuadPart - FbeginCount.QuadPart)) * 1000 / Ffrequence.QuadPart;
+		double time = (double)(((FendCount.QuadPart - FbeginCount.QuadPart)) * 1000) / Ffrequence.QuadPart;
 		summTime += time;
 		if (minTime > time) minTime = time;
 		if (maxTime < time) maxTime = time;

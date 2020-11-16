@@ -63,8 +63,8 @@ var
   res1, res2, res3: String;
 
 begin
-  size_1 := 100000;
-  size_2 := 600;
+  size_1 := 10000;
+  size_2 := 100;
   size_zamer := 50;
   count_time:=0;
   hLib := 0;
@@ -73,9 +73,9 @@ begin
 
   Memo1.Lines.Clear;
   Memo1.Lines.Add('DLL - RAD C Builder');
-  found_max := GetProcAddress(hLib, PChar('_getMinValue'));
-  found_min := GetProcAddress(hLib, PChar('_getVolume'));
-  max_dual_mas := GetProcAddress(hLib, PChar('_getDispersion'));
+  found_max := GetProcAddress(hLib, PChar('_getMinRangeOfVector'));
+  found_min := GetProcAddress(hLib, PChar('_getStandardDeviation'));
+  max_dual_mas := GetProcAddress(hLib, PChar('_getAvgValue'));
 
   Memo1.Lines.Add('Test Start');
   if (@found_max = nil) OR (@found_min = nil) OR (@max_dual_mas = nil) then
@@ -215,8 +215,8 @@ var
   res1, res2, res3: String;
 
 begin
-  size_1 := 100000;
-  size_2 := 600;
+  size_1 := 10000;
+  size_2 := 100;
   size_zamer := 50;
   count_time:=0;
   hLib := 0;
@@ -225,9 +225,9 @@ begin
 
   Memo1.Lines.Clear;
   Memo1.Lines.Add('DLL - RAD Delphi.dll');
-  found_max := GetProcAddress(hLib, PChar('getMinValue'));
-  found_min := GetProcAddress(hLib, PChar('getVolume'));
-  max_dual_mas := GetProcAddress(hLib, PChar('getDispersion'));
+  found_max := GetProcAddress(hLib, PChar('getMinRangeOfVector'));
+  found_min := GetProcAddress(hLib, PChar('getStandardDeviation'));
+  max_dual_mas := GetProcAddress(hLib, PChar('getAvgValue'));
 
   Memo1.Lines.Add('Test Start');
   if (@found_max = nil) OR (@found_min = nil) OR (@max_dual_mas = nil) then
@@ -368,8 +368,8 @@ var
   res1, res2, res3: String;
 
 begin
-  size_1 := 100000;
-  size_2 := 600;
+  size_1 := 10000;
+  size_2 := 100;
   size_zamer := 50;
   count_time:=0;
   hLib := 0;
@@ -378,9 +378,9 @@ begin
 
   Memo1.Lines.Clear;
   Memo1.Lines.Add('DLL - C.dll');
-  found_max := GetProcAddress(hLib, PChar('getMinValue'));
-  found_min := GetProcAddress(hLib, PChar('getVolume'));
-  max_dual_mas := GetProcAddress(hLib, PChar('getDispersion'));
+  found_max := GetProcAddress(hLib, PChar('getMinRangeOfVector'));
+  found_min := GetProcAddress(hLib, PChar('getStandardDeviation'));
+  max_dual_mas := GetProcAddress(hLib, PChar('getAvgValue'));
 
   Memo1.Lines.Add('Test Start');
   if (@found_max = nil) OR (@found_min = nil) OR (@max_dual_mas = nil) then
